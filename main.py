@@ -4,6 +4,5 @@ from controllers.MainController import MainController
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setApplicationName("Automatic Exams Reader")
     aer = MainController()
     sys.exit(app.exec())
