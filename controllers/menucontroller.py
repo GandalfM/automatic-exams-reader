@@ -14,5 +14,5 @@ class MenuController:
     def on_template_open_triggered(self):
         files = QFileDialog.getOpenFileNames(self.mainwindow, "Open template")
         filtered = [Template(x) for x in files[0] if x.endswith(".py")]
-        self.mainwindow.templates = filtered
+        self.mainwindow.templatecontroller.templates = filtered
         self.ui.statusbar.showMessage("Loaded {} templates".format(len(filtered)))

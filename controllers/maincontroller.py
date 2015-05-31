@@ -1,8 +1,7 @@
-from PyQt5.QtCore import QStringListModel
-
 from PyQt5.QtWidgets import QMainWindow
 
 from controllers.menucontroller import MenuController
+from controllers.templatecontroller import TemplateController
 from views.mainwindow import Ui_MainWindow
 
 
@@ -14,17 +13,6 @@ class MainController(QMainWindow):
         self.ui.setupUi(self)
 
         self.menucontroller = MenuController(self)
-
-        self._templates = []
+        self.templatecontroller = TemplateController(self)
 
         self.show()
-
-    @property
-    def templates(self):
-        return self._templates
-
-    @templates.setter
-    def templates(self, value):
-        self._templates = value
-        model = QStringListModel(map(lambda x: str(x), value))
-        self.ui.templateListView.setModel(model)
