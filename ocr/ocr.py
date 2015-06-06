@@ -1,11 +1,11 @@
 from PIL import Image
-from PIL import ImageEnhance
 from sklearn.externals import joblib
 from sklearn import datasets
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
 import numpy as np
 import os
+import cv2
 
 class Ocr:
     __CLASSIFIER_FILE = "cls.pkl"
@@ -44,16 +44,16 @@ class Ocr:
 
     def from_image(self, image):
         self.load_classifier()
-        image = ImageEnhance.Color(image).enhance(0.0)
-        image = ImageEnhance.Contrast(image).enhance(2.0)
-        image = image.convert('L')
-        image = image.resize((28, 28), Image.ANTIALIAS)
-        #image.point(lambda x: 0 if x < self.__TO_WHITE_BLACK_THRESHOLD else 255, 'L')
 
-        image.save("test.bmp", "BMP")
-        image_data = np.asmatrix(image, "int16")
-        print (image_data)
+        image = image.convert('RGB')
+        open_cv_image = np.array(image)
 
-        roi_hog_fd = hog(image_data, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
+        im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
+        im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
+        ret, im_th = cv2.threshold(im_gray, 90, 255, cv2.THRESH_BINARY_INV)
+        roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
+        roi = cv2.dilate(roi, (3, 3))
+
+        roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
         return int(nbr[0])
