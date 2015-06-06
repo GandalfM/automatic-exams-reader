@@ -22,9 +22,6 @@ class Ocr:
 
         list_hog_fd = []
         for feature in features:
-            #Image.fromarray(feature.reshape((28,28))).save("feature.jpg", "JPEG")
-#            print(feature.reshape((28, 28)))
-#            print("next")
             fd = hog(feature.reshape((28, 28)), orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
             list_hog_fd.append(fd)
         hog_features = np.array(list_hog_fd, 'float64')
@@ -50,7 +47,7 @@ class Ocr:
 
         im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
         im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
-        ret, im_th = cv2.threshold(im_gray, 90, 255, cv2.THRESH_BINARY_INV)
+        ret, im_th = cv2.threshold(im_gray, 150, 255, cv2.THRESH_BINARY_INV)
         roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
         roi = cv2.dilate(roi, (3, 3))
 

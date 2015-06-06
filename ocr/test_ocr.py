@@ -8,12 +8,12 @@ class TestOcr(unittest.TestCase):
         image = Image.open("testdata/ocr/test-image-four.jpg")
         ocrModule = ocr.Ocr()
         readed = ocrModule.from_image(image)
-        print("Recognized {} - should be 4".format(readed))
+        self.assertEqual(4, readed)
 
     def test_file(self):
         ocrModule = ocr.Ocr()
         readed = ocrModule.from_file("testdata/ocr/test-image-nine.jpg")
-        print("Recognized {} - should be 9".format(readed))
+        self.assertEqual(9, readed)
 
 if __name__ == '__main__':
     unittest.main()
