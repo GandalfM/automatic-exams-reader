@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-
+from controllers.examcontroller import ExamController
 from controllers.menucontroller import MenuController
 from controllers.templatecontroller import TemplateController
 from views.mainwindow import Ui_MainWindow
@@ -14,5 +14,6 @@ class MainController(QMainWindow):
 
         self.menucontroller = MenuController(self)
         self.templatecontroller = TemplateController(self)
+        self.examcontroller = ExamController(self)
 
         self.show()

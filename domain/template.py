@@ -1,7 +1,6 @@
 import json
 from domain.serialization import TemplateEncoder
 
-
 class Template:
     def __init__(self, name, size):
         self.name = name
