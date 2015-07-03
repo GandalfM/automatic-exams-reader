@@ -1,8 +1,5 @@
 from PyQt5.QtWidgets import QFileDialog
 
-from domain.template import Template
-
-
 class MenuController:
 
     def __init__(self, mainwindow):
@@ -14,8 +11,8 @@ class MenuController:
 
     def on_template_open_triggered(self):
         files = QFileDialog.getOpenFileNames(self.mainwindow, "Open template")
-        filtered = [Template(x, (100, 100)) for x in files[0] if x.endswith(".py")]
-        self.mainwindow.templatecontroller.templates = filtered
+        filtered = [x for x in files[0] if x.endswith(".template")]
+        self.mainwindow.template_list_controller.templates = filtered
         self.ui.statusbar.showMessage("Loaded {} templates".format(len(filtered)))
 
     def on_exam_open_triggered(self):

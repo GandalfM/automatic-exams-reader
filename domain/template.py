@@ -46,5 +46,5 @@ class Template:
 
     @staticmethod
     def from_file(file):
-        template = json.load(file, Template)
-        return template
+        content = file.read()
+        return Template.from_json(content)

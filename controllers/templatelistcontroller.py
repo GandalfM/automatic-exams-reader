@@ -1,11 +1,12 @@
 from PyQt5.QtCore import QStringListModel
 
 
-class TemplateController:
+class TemplateListController:
 
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
+        self._template_view_controller = mainwindow.template_view_controller
 
         self._templates = []
         self._selectedtemplate = None
@@ -22,10 +23,8 @@ class TemplateController:
     @selectedtemplate.setter
     def selectedtemplate(self, value):
         if self._selectedtemplate != value:
+            self._template_view_controller.selectedtemplate = value
             self._selectedtemplate = value
-            file = open(value.name, "r")
-            content = file.read()
-            self.ui.templateTextEdit.setText(content)
 
     @property
     def templates(self):

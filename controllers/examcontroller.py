@@ -7,6 +7,8 @@ class ExamController:
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
 
+        self.template_view_controller = mainwindow.template_view_controller
+
         self._exams = []
         self._selected_exam = None
 
@@ -35,3 +37,6 @@ class ExamController:
         self._exams = value
         model = QStringListModel(map(lambda x: str(x), value))
         self.ui.examListView.setModel(model)
+        if self._exams:
+            image = QImage(self._exams[0])
+            self.template_view_controller.default_exam = image
