@@ -26,6 +26,7 @@ class ExamController:
         if self._selected_exam != value:
             self._selected_exam = value
             image = QImage(value)
+            self.template_view_controller.default_exam = image
             self.ui.imageLabel.setPixmap(QPixmap.fromImage(image))
 
     @property
