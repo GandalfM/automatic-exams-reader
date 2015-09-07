@@ -29,7 +29,7 @@ class Template:
         return self.to_json()
 
     def to_json(self):
-        return json.dumps(self, cls=TemplateEncoder)
+        return json.dumps(self, cls=TemplateEncoder, indent=4)
 
     def __eq__(self, other):
         if isinstance(other, Template):
