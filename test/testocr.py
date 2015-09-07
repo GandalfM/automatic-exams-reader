@@ -1,6 +1,9 @@
 import unittest
+
 from PIL import Image
-from ocr import ocr
+
+from aer.ocr import ocr
+
 
 class TestOcr(unittest.TestCase):
 

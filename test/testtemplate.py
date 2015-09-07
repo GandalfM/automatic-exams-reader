@@ -1,6 +1,8 @@
 import unittest
 import json
-from domain.template import Template
+
+from aer.domain.template import Template
+
 
 class TestTemplate(unittest.TestCase):
     def test_save_json(self):

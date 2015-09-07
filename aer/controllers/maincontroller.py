@@ -1,8 +1,9 @@
 from PyQt5.QtWidgets import QMainWindow
+
 from controllers.examcontroller import ExamController
 from controllers.menucontroller import MenuController
 from controllers.templatelistcontroller import TemplateListController
-from controllers.templateviewcontroller import TemplateViewController
+from aer.controllers.templateviewcontroller import TemplateViewController
 from views.mainwindow import Ui_MainWindow
 
 

@@ -1,5 +1,7 @@
 import json
-from domain.serialization import TemplateEncoder
+
+from aer.domain.serialization import TemplateEncoder
+
 
 class Template:
     def __init__(self, name, size):
