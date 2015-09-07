@@ -13,7 +13,7 @@ class MenuController:
 
     def on_template_open_triggered(self):
         files = QFileDialog.getOpenFileNames(self.mainwindow, "Open template", self.template_dialog_path)
-        filtered = [x for x in files[0] if x.endswith(".template")]
+        filtered = [x for x in files[0] if x.lower().endswith(".template")]
         if len(filtered) > 0:
             self.template_dialog_path = filtered[0]
         self.mainwindow.template_list_controller.templates = filtered
@@ -21,7 +21,7 @@ class MenuController:
 
     def on_exam_open_triggered(self):
         files = QFileDialog.getOpenFileNames(self.mainwindow, "Import exams", self.exam_dialog_path)
-        filtered = [x for x in files[0] if x.endswith(".jpg")]
+        filtered = [x for x in files[0] if x.lower().endswith(".jpg")]
         if len(filtered) > 0:
             self.exam_dialog_path = filtered[0]
         self.mainwindow.examcontroller.exams = filtered
