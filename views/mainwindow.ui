@@ -95,7 +95,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string>No image</string>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -176,7 +176,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>TextLabel</string>
+             <string>No image</string>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
