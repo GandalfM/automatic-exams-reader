@@ -1,5 +1,6 @@
 # compiled *py
 views/*.py
+*.pkl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
