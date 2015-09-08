@@ -1,6 +1,6 @@
 import json
 
-from aer.domain.serialization import TemplateEncoder
+from domain.serialization import TemplateEncoder
 
 
 class Template:

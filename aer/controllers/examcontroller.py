@@ -11,6 +11,8 @@ class ExamController:
 
         self._exams = []
         self._selected_exam = None
+        # todo
+        self.exams = ["/home/adek/Dropbox/Projekt grupowy/Skany/Paczka 1/doc00063120150421142228_001.jpg"]
 
         self.ui.examListView.clicked.connect(self.on_exam_text_selection)
 
