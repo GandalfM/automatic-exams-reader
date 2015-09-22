@@ -1,6 +1,7 @@
 from PyQt5.QtGui import QPixmap
 
 from domain.template import Template
+from image.drawing import Drawing
 
 
 class TemplateViewController:
@@ -8,6 +9,7 @@ class TemplateViewController:
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
 
+        self.drawing = Drawing()
         self._selectedtemplate = None
         self._default_exam = None
 
@@ -22,6 +24,7 @@ class TemplateViewController:
         self._selectedtemplate = Template.from_file(file)
         content = self._selectedtemplate.to_json()
         self.ui.templateTextEdit.setText(content)
+        self._draw_template()
 
     @property
     def default_exam(self):
@@ -30,4 +33,11 @@ class TemplateViewController:
     @default_exam.setter
     def default_exam(self, exam):
         self._default_exam = exam
-        self.ui.templateViewLabel.setPixmap(QPixmap.fromImage(exam))
+        self._draw_template()
+
+    def _draw_template(self):
+        image = self._default_exam
+        if self._selectedtemplate is not None:
+            image = self.drawing.draw_template(self._default_exam, self._selectedtemplate)
+        self.ui.templateViewLabel.setPixmap(QPixmap.fromImage(image))
+
