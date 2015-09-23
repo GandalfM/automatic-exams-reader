@@ -9,7 +9,7 @@ class Drawing:
         self._color = (255, 0, 0)
         self._thickness = 2
         self._font_type = cv2.FONT_HERSHEY_COMPLEX_SMALL
-        self._font_size = 0.6
+        self._font_size = 0.8
         self._text_margin = 10
 
     def _image_to_mat(self, image):
@@ -28,8 +28,15 @@ class Drawing:
 
     def draw_template(self, image, template):
         mat = self._image_to_mat(image)
-        for name, rect in template.get_fields().items():
-            cv2.rectangle(mat, rect[:2], (rect[0] + rect[2], rect[1] + rect[3]), self._color, self._thickness)
-            text_pos = (rect[0] + self._text_margin, rect[1] + rect[3] - self._text_margin)
-            cv2.putText(mat, name, text_pos, self._font_type, self._font_size, self._color)
+
+        # resize image to template dimensions
+        mat = cv2.resize(mat, template.size)
+
+        # draw all rects
+        for name, rects in template.get_fields().items():
+            for rect in rects:
+                cv2.rectangle(mat, rect[:2], (rect[0] + rect[2], rect[1] + rect[3]), self._color, self._thickness)
+                text_pos = (rect[0] + self._text_margin, rect[1] + rect[3] - self._text_margin)
+                cv2.putText(mat, name, text_pos, self._font_type, self._font_size, self._color)
+
         return self._mat_to_image(mat)

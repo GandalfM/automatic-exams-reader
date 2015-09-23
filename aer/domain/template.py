@@ -1,6 +1,6 @@
 import json
 
-from domain.serialization import TemplateEncoder
+from aer.domain.serialization import TemplateEncoder
 
 
 class Template:
@@ -10,13 +10,13 @@ class Template:
         self._fields = {}
 
     def add_field(self, name, rect):
-        if name in self._fields:
-            raise Exception("You already have a field with such a name.")
         if len(rect) != 4:
             raise Exception("The rect parameter must be an iterable of size 4.")
         if rect[0] + rect[2] > self.size[0] or rect[1] + rect[3] > self.size[1]:
             raise Exception("The given rectangle does not fit.")
-        self._fields[name] = rect
+        if name not in self._fields:
+            self._fields[name] = []
+        self._fields[name].append(rect)
 
     def get_fields(self):
         return self._fields
@@ -43,7 +43,8 @@ class Template:
         d = json.loads(s)
         template = Template(d["name"], tuple(d["size"]))
         for field in d["rects"]:
-            template.add_field(field[0], tuple(field[1]))
+            for values in field[1]:
+                template.add_field(field[0], tuple(values))
         return template
 
     @staticmethod

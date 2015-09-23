@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QPixmap
 
-from domain.template import Template
-from image.drawing import Drawing
+from aer.domain.template import Template
+from aer.image.drawing import Drawing
 
 
 class TemplateViewController:
