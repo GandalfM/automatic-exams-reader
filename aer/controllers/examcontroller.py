@@ -1,6 +1,8 @@
 from PyQt5.QtCore import QStringListModel
 from PyQt5.QtGui import QImage, QPixmap
 
+from aer.image.drawing import Drawing
+
 
 class ExamController:
     def __init__(self, mainwindow):
@@ -11,8 +13,19 @@ class ExamController:
 
         self._exams = []
         self._selected_exam = None
+        self._scale = 1.0
+        self.drawing = Drawing()
 
         self.ui.examListView.clicked.connect(self.on_exam_text_selection)
+
+    @property
+    def scale(self):
+        return self._scale
+
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._draw_exam()
 
     def on_exam_text_selection(self, index):
         self.selected_exam = self._exams[index.row()]
@@ -23,11 +36,11 @@ class ExamController:
 
     @selected_exam.setter
     def selected_exam(self, value):
-        if self._selected_exam != value:
-            self._selected_exam = value
-            image = QImage(value)
+        image = QImage(value)
+        if self._selected_exam != image:
+            self._selected_exam = image
             self.template_view_controller.default_exam = image
-            self.ui.imageLabel.setPixmap(QPixmap.fromImage(image))
+            self._draw_exam()
 
     @property
     def exams(self):
@@ -41,3 +54,7 @@ class ExamController:
         if self._exams:
             image = QImage(self._exams[0])
             self.template_view_controller.default_exam = image
+
+    def _draw_exam(self):
+        image = self.drawing.resize(self._selected_exam, self._scale)
+        self.ui.imageLabel.setPixmap(QPixmap.fromImage(image))

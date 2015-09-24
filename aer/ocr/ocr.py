@@ -1,11 +1,14 @@
+import os
+
 from PIL import Image
 from sklearn.externals import joblib
 from sklearn import datasets
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
 import numpy as np
-import os
+
 import cv2
+
 
 class Ocr:
     __CLASSIFIER_FILE = "cls.pkl"

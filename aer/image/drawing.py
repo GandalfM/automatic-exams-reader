@@ -1,15 +1,16 @@
 from PyQt5 import QtGui
-import cv2
 import numpy as np
+
+import cv2
 
 
 class Drawing:
 
     def __init__(self):
         self._color = (255, 0, 0)
-        self._thickness = 2
+        self._thickness = 3
         self._font_type = cv2.FONT_HERSHEY_COMPLEX_SMALL
-        self._font_size = 0.8
+        self._font_size = 1.5
         self._text_margin = 10
 
     def _image_to_mat(self, image):
@@ -26,11 +27,8 @@ class Drawing:
     def _mat_to_image(self, mat):
         return QtGui.QImage(mat.data, mat.shape[1], mat.shape[0], QtGui.QImage.Format_RGB888)
 
-    def draw_template(self, image, template):
+    def draw_template(self, image, template, scale):
         mat = self._image_to_mat(image)
-
-        # resize image to template dimensions
-        mat = cv2.resize(mat, template.size)
 
         # draw all rects
         for name, rects in template.get_fields().items():
@@ -39,4 +37,12 @@ class Drawing:
                 text_pos = (rect[0] + self._text_margin, rect[1] + rect[3] - self._text_margin)
                 cv2.putText(mat, name, text_pos, self._font_type, self._font_size, self._color)
 
+        # resize image to template dimensions
+        mat = cv2.resize(mat, None, None, scale, scale)
         return self._mat_to_image(mat)
+
+    def resize(self, image, scale):
+        mat = self._image_to_mat(image)
+        mat = cv2.resize(mat, None, None, scale, scale)
+        return self._mat_to_image(mat)
+

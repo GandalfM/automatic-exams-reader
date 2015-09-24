@@ -5,6 +5,7 @@ from aer.image.drawing import Drawing
 
 
 class TemplateViewController:
+
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
@@ -12,6 +13,16 @@ class TemplateViewController:
         self.drawing = Drawing()
         self._selectedtemplate = None
         self._default_exam = None
+        self._scale = 1.0
+
+    @property
+    def scale(self):
+        return self._scale
+
+    @scale.setter
+    def scale(self, value):
+        self._scale = value
+        self._draw_template()
 
     @property
     def selectedtemplate(self):
@@ -36,8 +47,8 @@ class TemplateViewController:
         self._draw_template()
 
     def _draw_template(self):
-        image = self._default_exam
         if self._selectedtemplate is not None:
-            image = self.drawing.draw_template(self._default_exam, self._selectedtemplate)
+            image = self.drawing.draw_template(self._default_exam, self._selectedtemplate, self._scale)
+        else:
+            image = self.drawing.resize(self._default_exam, self._scale)
         self.ui.templateViewLabel.setPixmap(QPixmap.fromImage(image))
-
