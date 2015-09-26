@@ -180,6 +180,9 @@
              <string>JSON</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_5">
+             <property name="margin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QTextEdit" name="templateTextEdit">
                <property name="enabled">
@@ -295,6 +298,7 @@
     <property name="title">
      <string>Template</string>
     </property>
+    <addaction name="actionTemplateNew"/>
     <addaction name="actionTemplateOpen"/>
     <addaction name="actionTemplateSave"/>
     <addaction name="actionTemplateSaveAs"/>
@@ -384,6 +388,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionTemplateNew">
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>
