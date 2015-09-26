@@ -296,6 +296,8 @@
      <string>Template</string>
     </property>
     <addaction name="actionTemplateOpen"/>
+    <addaction name="actionTemplateSave"/>
+    <addaction name="actionTemplateSaveAs"/>
    </widget>
    <widget class="QMenu" name="menuExam">
     <property name="title">
@@ -343,6 +345,9 @@
    <property name="text">
     <string>Open</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionExamsImport">
    <property name="text">
@@ -363,6 +368,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionTemplateSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionTemplateSaveAs">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

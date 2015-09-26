@@ -9,22 +9,22 @@ class TemplateListController:
         self._template_view_controller = mainwindow.template_view_controller
 
         self._templates = []
-        self._selectedtemplate = None
+        self._selected_template = None
 
         self.ui.templateListView.clicked.connect(self.on_template_text_selection)
 
     def on_template_text_selection(self, index):
-        self.selectedtemplate = self._templates[index.row()]
+        self.selected_template = self._templates[index.row()]
 
     @property
-    def selectedtemplate(self):
-        return self._selectedtemplate
+    def selected_template(self):
+        return self._selected_template
 
-    @selectedtemplate.setter
-    def selectedtemplate(self, value):
-        if self._selectedtemplate != value:
-            self._template_view_controller.selectedtemplate = value
-            self._selectedtemplate = value
+    @selected_template.setter
+    def selected_template(self, value):
+        if self._selected_template != value:
+            self._template_view_controller.selected_template = value
+            self._selected_template = value
 
     @property
     def templates(self):
