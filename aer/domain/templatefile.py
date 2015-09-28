@@ -31,6 +31,6 @@ class TemplateFile:
 
     @file.setter
     def file(self, value):
-        if not self._file.closed:
+        if self._file is not None and not self._file.closed:
             self._file.close()
         self._file = value

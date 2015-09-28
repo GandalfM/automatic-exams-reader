@@ -52,11 +52,12 @@ class TemplateViewController:
         self._draw_template()
 
     def _draw_template(self):
-        if self._selected_template is not None:
-            image = self.drawing.draw_template(self._default_exam, self._selected_template.template, self._scale)
-        else:
-            image = self.drawing.resize(self._default_exam, self._scale)
-        self.ui.templateViewLabel.setPixmap(QPixmap.fromImage(image))
+        if self._default_exam is not None:
+            if self._selected_template is not None:
+                image = self.drawing.draw_template(self._default_exam, self._selected_template.template, self._scale)
+            else:
+                image = self.drawing.resize(self._default_exam, self._scale)
+            self.ui.templateViewLabel.setPixmap(QPixmap.fromImage(image))
 
     def template_text_changed(self):
         data = self.ui.templateTextEdit.toPlainText()
