@@ -1,11 +1,15 @@
+from PyQt5.QtCore import pyqtSignal, QObject
 from aer.domain.template import Template
 
 
-class TemplateFile:
+class TemplateFile(QObject):
+    
+    changedStatus = pyqtSignal()
 
     def __init__(self, filename, size=None):
+        super().__init__()
         self._file = None
-        self.changed = False
+        self._changed = False
 
         if filename != "":
             self._file = open(filename, "r+")
@@ -34,3 +38,12 @@ class TemplateFile:
         if self._file is not None and not self._file.closed:
             self._file.close()
         self._file = value
+
+    @property
+    def changed(self):
+        return self._changed
+
+    @changed.setter
+    def changed(self, value):
+        self._changed = value
+        self.changedStatus.emit()

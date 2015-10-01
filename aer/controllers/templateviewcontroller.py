@@ -38,6 +38,7 @@ class TemplateViewController:
         if self._default_exam is not None:
             size = (self._default_exam.width(), self._default_exam.height())
         self._selected_template = TemplateFile(filename, size)
+        self._selected_template.changedStatus.connect(self._draw_template)
         content = self._selected_template.template.to_json()
         self.ui.templateTextEdit.setText(content)
         self._draw_template()
