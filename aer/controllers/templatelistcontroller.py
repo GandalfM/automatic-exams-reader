@@ -10,7 +10,6 @@ class TemplateListController:
 
         self._templates = []
         self._selected_template = None
-
         self.ui.templateListView.clicked.connect(self.on_template_text_selection)
 
     def on_template_text_selection(self, index):

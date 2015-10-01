@@ -110,7 +110,7 @@
               <number>5</number>
              </property>
              <item>
-              <widget class="QLabel" name="imageLabel">
+              <widget class="ImageLabel" name="examViewLabel">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -173,7 +173,7 @@
             <enum>QTabWidget::South</enum>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="tab">
             <attribute name="title">
@@ -225,7 +225,7 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>429</width>
+                  <width>420</width>
                   <height>474</height>
                  </rect>
                 </property>
@@ -240,7 +240,7 @@
                   <number>5</number>
                  </property>
                  <item>
-                  <widget class="QLabel" name="templateViewLabel">
+                  <widget class="ImageLabel" name="templateViewLabel">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                      <horstretch>0</horstretch>
@@ -333,6 +333,7 @@
    </attribute>
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
+   <addaction name="actionAddField"/>
   </widget>
   <action name="actionFileExit">
    <property name="text">
@@ -398,7 +399,19 @@
     <string>Ctrl+N</string>
    </property>
   </action>
+  <action name="actionAddField">
+   <property name="text">
+    <string>Add field</string>
+   </property>
+  </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageLabel</class>
+   <extends>QLabel</extends>
+   <header>aer/widgets/imagelabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -9,6 +9,7 @@ class ToolbarController:
 
         self.ui.actionZoomIn.triggered.connect(self.on_zoom_in_triggered)
         self.ui.actionZoomOut.triggered.connect(self.on_zoom_out_triggered)
+        self.ui.actionAddField.triggered.connect(self.on_add_field_triggered)
 
     def on_zoom_in_triggered(self):
         if self.ui.mainTabs.currentIndex() == ToolbarController.EXAMS_INDEX:
@@ -33,3 +34,9 @@ class ToolbarController:
             scale = controller.scale
             if scale <= 2.0:
                 controller.scale += 0.1
+
+    def on_add_field_triggered(self):
+        template = self.mainwindow.template_view_controller.selected_template.template
+        rect = self.mainwindow.template_view_controller.tmp_rect
+        self.mainwindow.template_view_controller.tmp_rect = None
+        template.add_field("default", rect)

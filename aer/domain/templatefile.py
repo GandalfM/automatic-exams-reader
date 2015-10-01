@@ -1,10 +1,11 @@
 from PyQt5.QtCore import pyqtSignal, QObject
+
 from aer.domain.template import Template
 
 
 class TemplateFile(QObject):
     
-    changedStatus = pyqtSignal()
+    statusChanged = pyqtSignal()
 
     def __init__(self, filename, size=None):
         super().__init__()
@@ -46,4 +47,5 @@ class TemplateFile(QObject):
     @changed.setter
     def changed(self, value):
         self._changed = value
-        self.changedStatus.emit()
+        if self._changed is True:
+            self.statusChanged.emit()

@@ -10,12 +10,12 @@ class ExamController:
         self.ui = mainwindow.ui
 
         self.template_view_controller = mainwindow.template_view_controller
+        self.ui.examViewLabel.wheelScrolled.connect(self.on_wheel_scroll)
 
         self._exams = []
         self._selected_exam = None
         self._scale = 1.0
         self.drawing = Drawing()
-
         self.ui.examListView.clicked.connect(self.on_exam_text_selection)
 
     @property
@@ -57,4 +57,12 @@ class ExamController:
 
     def _draw_exam(self):
         image = self.drawing.resize(self._selected_exam, self._scale)
-        self.ui.imageLabel.setPixmap(QPixmap.fromImage(image))
+        self.ui.examViewLabel.setPixmap(QPixmap.fromImage(image))
+
+    def on_wheel_scroll(self, event):
+        if self.selected_exam is not None:
+            delta = event.angleDelta().y()
+            if delta > 0 and self.scale <= 2.0:
+                self.scale += 0.1
+            if delta < 0 and self.scale >= 0.2:
+                self.scale -= 0.1

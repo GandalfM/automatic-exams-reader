@@ -1,10 +1,16 @@
 import json
 
+from PyQt5.QtCore import QObject, pyqtSignal
+
 from aer.domain.serialization import TemplateEncoder
 
 
-class Template:
+class Template(QObject):
+
+    templateChanged = pyqtSignal()
+
     def __init__(self, name, size):
+        super().__init__()
         self.name = name
         self.size = size
         self._fields = {}
@@ -17,6 +23,7 @@ class Template:
         if name not in self._fields:
             self._fields[name] = []
         self._fields[name].append(rect)
+        self.templateChanged.emit()
 
     def get_fields(self):
         return self._fields
