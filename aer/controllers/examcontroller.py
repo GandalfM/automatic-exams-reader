@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QStringListModel
 from PyQt5.QtGui import QImage, QPixmap
 
+from aer.config.ConfigConstants import *
 from aer.image.drawing import Drawing
 
 
@@ -8,11 +9,12 @@ class ExamController:
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
+        self.config = self.mainwindow.config_manager
 
         self.template_view_controller = mainwindow.template_view_controller
         self.ui.examViewLabel.wheelScrolled.connect(self.on_wheel_scroll)
 
-        self._exams = []
+        self.exams = self.config.get_property(EXAMS_LOADED, [])
         self._selected_exam = None
         self._scale = 1.0
         self.drawing = Drawing()
@@ -54,6 +56,7 @@ class ExamController:
         if self._exams:
             image = QImage(self._exams[0])
             self.template_view_controller.default_exam = image
+        self.config.set_property(EXAMS_LOADED, value)
 
     def _draw_exam(self):
         image = self.drawing.resize(self._selected_exam, self._scale)

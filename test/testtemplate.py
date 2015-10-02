@@ -16,6 +16,9 @@ class TestTemplate(unittest.TestCase):
         expected = ''.join(json.dumps(expected_dict).split())
         self.assertEqual(actual, expected)
 
+        with open('../testdata/template/testing.template', 'w') as f:
+            f.write(actual)
+
     def test_load_json(self):
         expected = Template("name", (800, 600))
         expected.add_field("numer_indeksu", (0, 0, 200, 100))

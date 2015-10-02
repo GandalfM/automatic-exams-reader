@@ -1,14 +1,16 @@
+import os
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QFileDialog
-
+from aer.config.ConfigConstants import *
 
 class MenuController:
 
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
+        self.config = self.mainwindow.config_manager
         self.ui = mainwindow.ui
-        self.template_dialog_path = "."
-        self.exam_dialog_path = "."
+        self.template_dialog_path = self.config.get_property(TEMPLATE_DIALOG_PATH_KEY, ".")
+        self.exam_dialog_path = self.config.get_property(EXAM_DIALOG_PATH_KEY, ".")
 
         self.ui.actionTemplateOpen.triggered.connect(self.on_template_open_triggered)
         self.ui.actionExamsImport.triggered.connect(self.on_exam_open_triggered)
@@ -17,16 +19,22 @@ class MenuController:
         self.ui.actionTemplateNew.triggered.connect(self.on_template_new)
 
     def on_template_open_triggered(self):
-        files = QFileDialog.getOpenFileNames(self.mainwindow, "Open template", self.template_dialog_path)
-        filtered = [x for x in files[0] if x.lower().endswith(".template")]
-        if len(filtered) > 0:
-            self.template_dialog_path = filtered[0]
+        files, directories = QFileDialog.getOpenFileNames(self.mainwindow, "Open template", self.template_dialog_path)
+        if files:
+            self.config.set_property(TEMPLATE_DIALOG_PATH_KEY, os.path.dirname(files[0]))
+            self.template_dialog_path = os.path.dirname(files[0])
+
+        filtered = [x for x in files if x.lower().endswith(".template")]
+
         self.mainwindow.template_list_controller.templates = filtered
+        self.config.set_property(TEMPLATES_LOADED, filtered)
         self.ui.statusbar.showMessage("Loaded {} templates".format(len(filtered)))
 
     def on_exam_open_triggered(self):
-        files = QFileDialog.getOpenFileNames(self.mainwindow, "Import exams", self.exam_dialog_path)
-        filtered = [x for x in files[0] if x.lower().endswith(".jpg")]
+        files, directories = QFileDialog.getOpenFileNames(self.mainwindow, "Import exams", self.exam_dialog_path)
+        if files:
+            self.config.set_property(EXAM_DIALOG_PATH_KEY, os.path.dirname(files[0]))
+        filtered = [x for x in files if x.lower().endswith(".jpg")]
         if len(filtered) > 0:
             self.exam_dialog_path = filtered[0]
         self.mainwindow.examcontroller.exams = filtered

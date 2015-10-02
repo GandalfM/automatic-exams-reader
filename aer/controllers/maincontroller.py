@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
+from aer.config.ConfigManager import ConfigManager
 
 from aer.controllers.examcontroller import ExamController
 from aer.controllers.menucontroller import MenuController
@@ -14,6 +15,8 @@ class MainController(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        self.config_manager = ConfigManager()
 
         self.menucontroller = MenuController(self)
         self.toolbarcontroller = ToolbarController(self)

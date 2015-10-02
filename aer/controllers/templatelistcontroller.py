@@ -1,14 +1,17 @@
 from PyQt5.QtCore import QStringListModel
+from aer.config.ConfigConstants import *
 
 
 class TemplateListController:
 
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
+        self.config = self.mainwindow.config_manager
         self.ui = mainwindow.ui
         self._template_view_controller = mainwindow.template_view_controller
 
-        self._templates = []
+        self.templates = self.config.get_property(TEMPLATES_LOADED, [])
+
         self._selected_template = None
         self.ui.templateListView.clicked.connect(self.on_template_text_selection)
 
