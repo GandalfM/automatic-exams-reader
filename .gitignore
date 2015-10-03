@@ -63,7 +63,7 @@ target/
 # PyCharm files
 .idea/
 
-# User config files
+#  User config files
 config.dat
 config.dir
 config.bak
