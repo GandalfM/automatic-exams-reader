@@ -1,6 +1,6 @@
 import shelve
 
-CONFIG_FILENAME = "config"
+CONFIG_FILENAME = "configuration"
 
 
 class ConfigManager:
