@@ -1,6 +1,7 @@
 # compiled *py
 aer/views/*.py
 *.pkl
+config
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

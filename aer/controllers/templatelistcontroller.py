@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QStringListModel
-from aer.config.ConfigConstants import *
+from aer.config.configconstants import *
 
 
 class TemplateListController:

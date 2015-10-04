@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QStringListModel
 from PyQt5.QtGui import QImage, QPixmap
 
-from aer.config.ConfigConstants import *
+from aer.config.configconstants import *
 from aer.image.drawing import Drawing
 
 

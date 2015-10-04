@@ -1,4 +1,3 @@
-__author__ = 'Bartek'
 import shelve
 
 CONFIG_FILENAME = "config"

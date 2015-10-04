@@ -36,7 +36,8 @@ class ToolbarController:
                 controller.scale += 0.1
 
     def on_add_field_triggered(self):
-        template = self.mainwindow.template_view_controller.selected_template.template
         rect = self.mainwindow.template_view_controller.tmp_rect
-        self.mainwindow.template_view_controller.tmp_rect = None
-        template.add_field("default", rect)
+        if rect is not None:
+            template = self.mainwindow.template_view_controller.selected_template.template
+            self.mainwindow.template_view_controller.tmp_rect = None
+            template.add_field("default", rect)

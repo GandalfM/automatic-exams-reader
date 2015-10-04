@@ -1,7 +1,5 @@
 from aer.utils.utils import combine
 
-__author__ = 'Bartek'
-
 
 def convert_template_rect_to_crop_rect(template_rect):
     x, y, w, h = template_rect

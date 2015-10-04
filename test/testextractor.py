@@ -1,10 +1,8 @@
 import unittest
 
 from aer.domain.template import Template
-from aer.extractor.FieldExtractor import FieldExtractor
+from aer.extractor.fieldextractor import FieldExtractor
 from PIL import Image
-
-__author__ = 'Bartek'
 
 
 class TestExtractor(unittest.TestCase):

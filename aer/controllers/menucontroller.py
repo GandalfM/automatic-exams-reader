@@ -1,7 +1,7 @@
 import os
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QFileDialog
-from aer.config.ConfigConstants import *
+from aer.config.configconstants import *
 
 class MenuController:
 

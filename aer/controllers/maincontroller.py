@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow
-from aer.config.ConfigManager import ConfigManager
+from aer.config.configmanager import ConfigManager
 
 from aer.controllers.examcontroller import ExamController
 from aer.controllers.menucontroller import MenuController
