@@ -1,7 +1,9 @@
 import os
 from PyQt5.QtCore import QItemSelectionModel
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QProgressDialog
 from aer.config.configconstants import *
+from aer.ocr.ocr_task import *
+
 
 class MenuController:
 
@@ -11,9 +13,13 @@ class MenuController:
         self.ui = mainwindow.ui
         self.template_dialog_path = self.config.get_property(TEMPLATE_DIALOG_PATH_KEY, ".")
         self.exam_dialog_path = self.config.get_property(EXAM_DIALOG_PATH_KEY, ".")
+        self.proceed_template_dialog_path = self.config.get_property(PROCEED_TEMPLATE_DIALOG_PATH_KEY, ".")
+
+        self.ocr_task = OcrTask()
 
         self.ui.actionTemplateOpen.triggered.connect(self.on_template_open_triggered)
         self.ui.actionExamsImport.triggered.connect(self.on_exam_open_triggered)
+        self.ui.actionExamsProceedTemplate.triggered.connect(self.on_exam_proceed_template_triggered)
         self.ui.actionTemplateSave.triggered.connect(self.on_template_save)
         self.ui.actionTemplateSaveAs.triggered.connect(self.on_template_save_as)
         self.ui.actionTemplateNew.triggered.connect(self.on_template_new)
@@ -39,6 +45,19 @@ class MenuController:
             self.exam_dialog_path = filtered[0]
         self.mainwindow.examcontroller.exams = filtered
         self.ui.statusbar.showMessage("Loaded {} exams".format(len(filtered)))
+
+    def on_exam_proceed_template_triggered(self):
+        progressDialog = QProgressDialog(self.mainwindow)
+
+        self.ocr_task.template = self.mainwindow.template_list_controller.selected_template
+        self.ocr_task.exams = self.mainwindow.examcontroller.exams
+        self.ocr_task.finished.connect(lambda: progressDialog.close())
+        progressDialog.setWindowTitle("Template proceed")
+        progressDialog.setRange(0, 0)
+        progressDialog.setCancelButton(None)
+
+        progressDialog.show()
+        self.ocr_task.start()
 
     def on_template_save(self):
         template_file = self.mainwindow.template_view_controller.selected_template

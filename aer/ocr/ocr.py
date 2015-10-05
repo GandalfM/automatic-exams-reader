@@ -38,15 +38,22 @@ class Ocr:
         else:
             self.clf = joblib.load(self.__CLASSIFIER_FILE)
 
-    def from_file(self, path):
+    def from_file(self, path, roi=None):
         image = Image.open(path)
-        return self.from_image(image)
+        return self.from_image(image, roi)
 
-    def from_image(self, image):
+    def from_image(self, image, roi=None):
         self.load_classifier()
 
         image = image.convert('RGB')
         open_cv_image = np.array(image)
+
+        if roi:
+            x = int(roi[0])
+            y = int(roi[1])
+            width = int(roi[2])
+            height = int(roi[3])
+            open_cv_image = open_cv_image[y:y+height, x: x + width]
 
         im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
         im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
