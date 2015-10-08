@@ -68,6 +68,7 @@ class TemplateViewController:
 
     def _change_text(self):
         content = self._selected_template.template.to_json()
+        self._selected_template.changed = True
         self.ui.templateTextEdit.setText(content)
 
     def template_text_changed(self):
@@ -86,7 +87,11 @@ class TemplateViewController:
         if self._selected_template is not None:
             x = int(event.pos().x() / self._scale)
             y = int(event.pos().y() / self._scale)
-            self.tmp_rect = (x, y, 0, 0)
+            tmp_rect = self._selected_template.template.pop_rect(x, y)
+            if tmp_rect is None:
+                self.tmp_rect = (x, y, 0, 0)
+            else:
+                self.tmp_rect = tmp_rect
 
     def on_mouse_move(self, event):
         if self._selected_template is not None:
@@ -96,10 +101,11 @@ class TemplateViewController:
         if self._selected_template is not None:
             x = int(event.pos().x() / self._scale)
             y = int(event.pos().y() / self._scale)
-            tmp_rect = self.tmp_rect
-            self.tmp_rect = (tmp_rect[0], tmp_rect[1], x - tmp_rect[0], y - tmp_rect[1])
-            if self.tmp_rect[2] == 0 or self.tmp_rect[3] == 0:
-                self.tmp_rect = None
+            if self.tmp_rect[2] == 0 and self.tmp_rect[3] == 0:
+                tmp_rect = self.tmp_rect
+                self.tmp_rect = (tmp_rect[0], tmp_rect[1], x - tmp_rect[0], y - tmp_rect[1])
+                if self.tmp_rect[2] == 0 or self.tmp_rect[3] == 0:
+                    self.tmp_rect = None
             self._draw_template()
 
     def on_wheel_scroll(self, event):

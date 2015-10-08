@@ -28,8 +28,18 @@ class Template(QObject):
     def get_fields(self):
         return self._fields
 
-    def get_field_rects(self):
-        return self._fields.values()
+    def pop_rect(self, x, y):
+        for _, rects in self._fields.items():
+            for rect in rects:
+                if self._point_inside_rect(rect, x, y):
+                    rects.remove(rect)
+                    self.templateChanged.emit()
+                    return rect
+
+        return None
+
+    def _point_inside_rect(self, rect, x, y):
+        return rect[0] < x < rect[0] + rect[2] and rect[1] < y < rect[1] + rect[3]
 
     def __str__(self):
         return self.name
