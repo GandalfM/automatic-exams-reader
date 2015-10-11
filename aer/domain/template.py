@@ -16,29 +16,30 @@ class Template(QObject):
         self._fields = {}
 
     def add_field(self, name, rect):
+        if name in self._fields:
+            raise Exception("Already have a field with such name", name)
         if len(rect) != 4:
             raise Exception("The rect parameter must be an iterable of size 4.")
         if rect[0] + rect[2] > self.size[0] or rect[1] + rect[3] > self.size[1]:
             raise Exception("The given rectangle does not fit.")
-        if name not in self._fields:
-            self._fields[name] = []
-        self._fields[name].append(rect)
+
+        self._fields[name] = rect
         self.templateChanged.emit()
 
     def get_fields(self):
         return self._fields
 
-    def pop_rect(self, x, y):
-        for _, rects in self._fields.items():
-            for rect in rects:
-                if self._point_inside_rect(rect, x, y):
-                    rects.remove(rect)
-                    self.templateChanged.emit()
-                    return rect
+    def remove_field_at(self, x, y):
+        for key, rect in self._fields.items():
+            if Template._point_inside_rect(rect, x, y):
+                del self._fields[key]
+                self.templateChanged.emit()
+                return rect
 
         return None
 
-    def _point_inside_rect(self, rect, x, y):
+    @staticmethod
+    def _point_inside_rect(rect, x, y):
         return rect[0] < x < rect[0] + rect[2] and rect[1] < y < rect[1] + rect[3]
 
     def __str__(self):
@@ -60,8 +61,7 @@ class Template(QObject):
         d = json.loads(s)
         template = Template(d["name"], tuple(d["size"]))
         for field in d["rects"]:
-            for values in field[1]:
-                template.add_field(field[0], tuple(values))
+            template.add_field(field[0], tuple(field[1]))
         return template
 
     @staticmethod

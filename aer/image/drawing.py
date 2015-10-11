@@ -32,11 +32,10 @@ class Drawing:
         mat = self._image_to_mat(image)
 
         # draw all rects
-        for name, rects in template.get_fields().items():
-            for rect in rects:
-                cv2.rectangle(mat, rect[:2], (rect[0] + rect[2], rect[1] + rect[3]), self._color, self._thickness)
-                text_pos = (rect[0] + self._text_margin, rect[1] + rect[3] - self._text_margin)
-                cv2.putText(mat, name, text_pos, self._font_type, self._font_size, self._color)
+        for name, rect in template.get_fields().items():
+            cv2.rectangle(mat, rect[:2], (rect[0] + rect[2], rect[1] + rect[3]), self._color, self._thickness)
+            text_pos = (rect[0] + self._text_margin, rect[1] + rect[3] - self._text_margin)
+            cv2.putText(mat, name, text_pos, self._font_type, self._font_size, self._color)
 
         # draw temp rect
         if tmp_rect is not None:

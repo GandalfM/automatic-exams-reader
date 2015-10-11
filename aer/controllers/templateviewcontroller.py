@@ -87,7 +87,7 @@ class TemplateViewController:
         if self._selected_template is not None:
             x = int(event.pos().x() / self._scale)
             y = int(event.pos().y() / self._scale)
-            tmp_rect = self._selected_template.template.pop_rect(x, y)
+            tmp_rect = self._selected_template.template.remove_field_at(x, y)
             if tmp_rect is None:
                 self.tmp_rect = (x, y, 0, 0)
             else:
