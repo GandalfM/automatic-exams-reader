@@ -19,12 +19,8 @@ class OcrTask(QThread):
         template = template_file.template
 
         result = {}
-        for name, fields in template.get_fields().items():
-            results = []
-            for roi in fields:
-                results.append(self.ocr.from_file(exam, roi))
-            result[name] = results
-
+        for name, field in template.get_fields().items():
+            result[name] = self.ocr.from_file(exam, field)
         print(result)
 
     def run(self):

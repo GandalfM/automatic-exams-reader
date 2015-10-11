@@ -6,7 +6,7 @@ from PIL import Image
 
 
 class TestExtractor(unittest.TestCase):
-    test_image_filename = '../testdata/extractor/test-image.png'
+    test_image_filename = 'data/extractor/test-image.png'
 
     color_dict = {
         "white": 8,
@@ -23,7 +23,7 @@ class TestExtractor(unittest.TestCase):
     def test_extract_fields(self):
         extracted = self.extractor.extract_fields_from_exam(self.image)
         for key, value in extracted.items():
-            self.assertIsAllColor(value[0], TestExtractor.color_dict[key])
+            self.assertIsAllColor(value, TestExtractor.color_dict[key])
 
     def example_template(self):
         template = Template("name", (400, 400))

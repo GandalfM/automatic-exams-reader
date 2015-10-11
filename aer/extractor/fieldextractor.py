@@ -11,8 +11,7 @@ def extract_function_factory(exam_image):
         combined_function = combine(convert_template_rect_to_crop_rect, exam_image.crop)
         if isinstance(field, list):
             return list(map(combined_function, field))
-        return exam_image.crop(combined_function(field))
-
+        return combined_function(field)
     return extract_function
 
 
