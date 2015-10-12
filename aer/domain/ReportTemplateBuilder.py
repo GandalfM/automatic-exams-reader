@@ -15,7 +15,11 @@ class ReportTemplateBuilder:
             for field_param in field_parameters:
                 if not self.check_field_exists(field_param):
                     raise Exception("The given field does not exist.")
-        self.report_template[key] = {field_parameters, func_name}
+        self.report_template[key] = [field_parameters, func_name]
+        return self
 
     def check_field_exists(self, field_name):
         return field_name in self.template.get_fields()
+
+    def build(self):
+        return self.report_template
