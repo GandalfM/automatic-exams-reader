@@ -72,7 +72,7 @@ class Ocr:
 
         im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
         cv2.equalizeHist(im_gray, im_gray)
-        im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
+        im_gray = cv2.medianBlur(im_gray, 5)
         ret, im_th = cv2.threshold(im_gray, self.__TO_WHITE_BLACK_THRESHOLD, 255, cv2.THRESH_BINARY_INV)
         self.filter_biggest_blob(im_th)
         roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
