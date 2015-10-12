@@ -5,4 +5,4 @@ class FieldCutter:
         pass
 
     def cut_field(self, field):
-        return field
+        return [field]

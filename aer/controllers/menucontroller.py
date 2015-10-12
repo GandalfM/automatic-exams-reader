@@ -1,4 +1,3 @@
-import os
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QFileDialog, QProgressDialog
 from aer.config.configconstants import *

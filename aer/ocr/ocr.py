@@ -76,7 +76,6 @@ class Ocr:
         ret, im_th = cv2.threshold(im_gray, self.__TO_WHITE_BLACK_THRESHOLD, 255, cv2.THRESH_BINARY_INV)
         self.filter_biggest_blob(im_th)
         roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
-        roi = cv2.erode(roi, (3, 3))
 
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
