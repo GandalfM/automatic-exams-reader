@@ -12,10 +12,11 @@ import cv2
 
 class Ocr:
     __CLASSIFIER_FILE = "cls.pkl"
-    __TO_WHITE_BLACK_THRESHOLD = 180
+    __TO_WHITE_BLACK_THRESHOLD = 100
 
     def __init__(self):
         self.clf = None
+        self._debug_image_iterator = 0
 
     def create_classifier(self):
         # source: http://hanzratech.in/2015/02/24/handwritten-digit-recognition-using-opencv-sklearn-and-python.html
@@ -42,6 +43,10 @@ class Ocr:
         image = Image.open(path)
         return self.from_image(image, roi)
 
+    def _debug_save_image(self, image):
+        cv2.imwrite("image" + str(self._debug_image_iterator) + ".jpg", image)
+        self._debug_image_iterator += 1
+
     def from_image(self, image, roi=None):
         self.load_classifier()
 
@@ -56,10 +61,11 @@ class Ocr:
             open_cv_image = open_cv_image[y:y+height, x: x + width]
 
         im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
+        cv2.equalizeHist(im_gray, im_gray)
         im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
-        ret, im_th = cv2.threshold(im_gray, 150, 255, cv2.THRESH_BINARY_INV)
+        ret, im_th = cv2.threshold(im_gray, self.__TO_WHITE_BLACK_THRESHOLD, 255, cv2.THRESH_BINARY_INV)
+        im_th = cv2.erode(im_th, (10, 10))
         roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
-        roi = cv2.dilate(roi, (3, 3))
 
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
