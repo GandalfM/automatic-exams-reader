@@ -47,6 +47,16 @@ class Ocr:
         cv2.imwrite("image" + str(self._debug_image_iterator) + ".jpg", image)
         self._debug_image_iterator += 1
 
+    def filter_biggest_blob(self, image):
+        im2, contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        maxContour = contours[0]
+        for contour in contours:
+            if cv2.contourArea(maxContour) < cv2.contourArea(contour):
+                maxContour = contour
+
+        image.fill(0)
+        cv2.drawContours(image, [maxContour], -1, 255, -1)
+
     def from_image(self, image, roi=None):
         self.load_classifier()
 
@@ -64,8 +74,9 @@ class Ocr:
         cv2.equalizeHist(im_gray, im_gray)
         im_gray = cv2.GaussianBlur(im_gray, (5, 5), 0)
         ret, im_th = cv2.threshold(im_gray, self.__TO_WHITE_BLACK_THRESHOLD, 255, cv2.THRESH_BINARY_INV)
-        im_th = cv2.erode(im_th, (10, 10))
+        self.filter_biggest_blob(im_th)
         roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
+        roi = cv2.erode(roi, (3, 3))
 
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
