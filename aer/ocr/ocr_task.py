@@ -1,6 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from aer.ocr.ocr import *
-from aer.recognizer.Recognizer import Recognizer
+from aer.recognizer.recognizer import Recognizer
 from aer.domain.templatefile import TemplateFile
 
 

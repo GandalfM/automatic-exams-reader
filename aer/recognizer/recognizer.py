@@ -1,9 +1,7 @@
 from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr import Ocr
-from aer.recognizer.FieldCutter import FieldCutter
+from aer.recognizer.fieldcutter import FieldCutter
 from PIL import Image
-
-__author__ = 'Bartek'
 
 class Recognizer:
     def __init__(self, template):
@@ -25,6 +23,3 @@ class Recognizer:
             recognized_str = ''.join([str(self.ocr.from_image(char)) for char in single_character_images])
             result[field_name] = recognized_str
         return result
-
-    def cut_field_into_single_characters(self, field):
-        return field

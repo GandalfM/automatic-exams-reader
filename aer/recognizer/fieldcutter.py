@@ -1,5 +1,3 @@
-__author__ = 'Bartek'
-
 class FieldCutter:
     def __init__(self):
         pass
