@@ -1,6 +1,7 @@
 import json
 
 from PyQt5.QtCore import QObject, pyqtSignal
+from aer.domain.ReportTemplateBuilder import ReportTemplateBuilder
 
 from aer.domain.serialization import TemplateEncoder
 
@@ -25,6 +26,9 @@ class Template(QObject):
 
         self._fields[name] = rect
         self.templateChanged.emit()
+
+    def report_builder(self):
+        return ReportTemplateBuilder(self)
 
     def get_fields(self):
         return self._fields
