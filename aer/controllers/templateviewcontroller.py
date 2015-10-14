@@ -104,6 +104,16 @@ class TemplateViewController:
             if self.tmp_rect[2] == 0 and self.tmp_rect[3] == 0:
                 tmp_rect = self.tmp_rect
                 self.tmp_rect = (tmp_rect[0], tmp_rect[1], x - tmp_rect[0], y - tmp_rect[1])
+                if self.tmp_rect[2] < 0:
+                    l = list(self.tmp_rect)
+                    l[2] = abs(l[2])
+                    l[0] -= l[2]
+                    self.tmp_rect = tuple(l)
+                if self.tmp_rect[3] < 0:
+                    l = list(self.tmp_rect)
+                    l[3] = abs(l[3])
+                    l[1] -= l[3]
+                    self.tmp_rect = tuple(l)
                 if self.tmp_rect[2] == 0 or self.tmp_rect[3] == 0:
                     self.tmp_rect = None
             self._draw_template()
