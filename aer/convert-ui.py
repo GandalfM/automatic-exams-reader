@@ -1,7 +1,5 @@
 import os
 
-__author__ = 'adek'
-
 os.chdir("views")
 for file in os.listdir("."):
     if file.endswith(".ui"):

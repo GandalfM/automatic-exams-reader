@@ -1,7 +1,5 @@
 from aer.utils.utils import combine
 
-__author__ = 'Bartek'
-
 import unittest
 
 

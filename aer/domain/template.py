@@ -1,7 +1,7 @@
 import json
 
 from PyQt5.QtCore import QObject, pyqtSignal
-from aer.domain.ReportTemplateBuilder import ReportTemplateBuilder
+from aer.domain.reporttemplatebuilder import ReportTemplateBuilder
 
 from aer.domain.serialization import TemplateEncoder
 

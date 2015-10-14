@@ -1,7 +1,5 @@
 from aer.domain.template import Template
-from aer.report.ReportCreator import ReportCreator
-
-__author__ = 'Bartek'
+from aer.report.reportcreator import ReportCreator
 
 import unittest
 
