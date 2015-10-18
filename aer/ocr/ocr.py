@@ -1,23 +1,23 @@
-import os
-
 from PIL import Image
 from sklearn.externals import joblib
 from sklearn import datasets
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
 import numpy as np
-from aer.utils.imageutil import debug_save_image
+from aer.utils.imageutil import *
 
 import cv2
 
 
 class Ocr:
-    __CLASSIFIER_FILE = "cls.pkl"
+    __CLASSIFIER_FILE_NAME = "cls.pkl"
     __TO_WHITE_BLACK_THRESHOLD = 100
 
     def __init__(self):
         self.clf = None
-        self._debug_image_iterator = 0
+        parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        self.__CLASSIFIER_FILE = os.path.join(parent_dir, self.__CLASSIFIER_FILE_NAME)
+        self.connectivity = 4
 
     def create_classifier(self):
         # source: http://hanzratech.in/2015/02/24/handwritten-digit-recognition-using-opencv-sklearn-and-python.html
@@ -45,22 +45,20 @@ class Ocr:
         return self.from_image(image, roi)
 
     def filter_biggest_blob(self, image):
-        im2, contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        maxContour = contours[0]
-        for contour in contours:
-            if cv2.contourArea(maxContour) < cv2.contourArea(contour):
-                maxContour = contour
-
-        image.fill(0)
-        cv2.drawContours(image, [maxContour], -1, 255, -1)
+        _, labels, stats, _ = cv2.connectedComponentsWithStats(image, self.connectivity)
+        tmp = np.argwhere(stats[1:, 4] == max(stats[1:, 4]))
+        idx = (labels == tmp[0][0] + 1)
+        mask = np.zeros(image.shape, np.uint8)
+        mask.fill(0)
+        mask[idx] = 255
+        return mask
 
     def from_image(self, image, roi=None):
         self.load_classifier()
 
-        image = image.convert('RGB')
+        image = image.convert('RGBA')
         open_cv_image = np.array(image)
-        debug_save_image(open_cv_image)
-
+        # debug_save_image(open_cv_image, "initial")
 
         if roi:
             x = int(roi[0])
@@ -70,14 +68,18 @@ class Ocr:
             open_cv_image = open_cv_image[y:y+height, x: x + width]
 
         im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
-        cv2.equalizeHist(im_gray, im_gray)
-        im_gray = cv2.medianBlur(im_gray, 5)
-        debug_save_image(im_gray)
-        ret, im_th = cv2.threshold(im_gray, self.__TO_WHITE_BLACK_THRESHOLD, 255, cv2.THRESH_BINARY_INV)
-        debug_save_image(im_th)
-        self.filter_biggest_blob(im_th)
-        debug_save_image(im_th)
-        roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
+        canny_image = cv2.Canny(im_gray, 70, 255)
+        # debug_save_image(canny_image, "first-canny")
+
+        canny_image = cv2.dilate(canny_image, kernel_ellipse(3))
+        canny_image = cv2.morphologyEx(canny_image, cv2.MORPH_CLOSE, kernel_ellipse(5))
+
+        # debug_save_image(canny_image, "canny")
+        canny_image = self.filter_biggest_blob(canny_image)
+        # debug_save_image(canny_image, "canny-biggest")
+
+        roi = cv2.resize(canny_image.copy(), (28, 28))
+        # debug_save_image(roi, "small")
 
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
