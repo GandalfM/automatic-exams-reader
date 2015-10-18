@@ -1,13 +1,16 @@
 from PIL import Image
 import numpy as np
+from aer.utils.imageutil import debug_save_image
 
 import cv2
 
 
 class FieldCutter:
     def __init__(self):
-        self.white = (255, 255, 255)
-        self.black = (0, 0, 0)
+        # self.white = (255, 255, 255)
+        self.white = 255
+        # self.black = (0, 0, 0)
+        self.black = 0
         self.thickness = 5
         self.thickness = 5
         self.area_coeff = 0.75
@@ -41,14 +44,13 @@ class FieldCutter:
             idx = (labels == i)
             mask[idx] = 255
             _, contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            cv2.drawContours(mask, contours, -1, self.white, cv2.FILLED)
-            cv2.drawContours(mask, contours, -1, self.black, self.thickness)
-            idx = (mask != 0)
-            # copy colored image
-            result[idx] = img[idx]
             rect = cv2.boundingRect(contours[0])
             # crop the image
-            digit = result[rect[1]:rect[1] + rect[3], rect[0]:rect[0] + rect[2]]
+            # let's assume that border will take 2,5% of each dimension
+            width_border_insurance = rect[3] * 0.025
+            height_border_insurance = rect[2] * 0.025
+            digit = img[rect[1] + width_border_insurance:rect[1] + rect[3] - width_border_insurance,
+                    rect[0] + height_border_insurance: rect[0] + rect[2] - height_border_insurance]
             fields.append(Image.fromarray(digit))
 
         return fields

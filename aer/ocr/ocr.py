@@ -6,6 +6,7 @@ from sklearn import datasets
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
 import numpy as np
+from aer.utils.imageutil import debug_save_image
 
 import cv2
 
@@ -43,10 +44,6 @@ class Ocr:
         image = Image.open(path)
         return self.from_image(image, roi)
 
-    def _debug_save_image(self, image):
-        cv2.imwrite("image" + str(self._debug_image_iterator) + ".jpg", image)
-        self._debug_image_iterator += 1
-
     def filter_biggest_blob(self, image):
         im2, contours, hierarchy = cv2.findContours(image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         maxContour = contours[0]
@@ -62,6 +59,8 @@ class Ocr:
 
         image = image.convert('RGB')
         open_cv_image = np.array(image)
+        debug_save_image(open_cv_image)
+
 
         if roi:
             x = int(roi[0])
@@ -73,8 +72,11 @@ class Ocr:
         im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
         cv2.equalizeHist(im_gray, im_gray)
         im_gray = cv2.medianBlur(im_gray, 5)
+        debug_save_image(im_gray)
         ret, im_th = cv2.threshold(im_gray, self.__TO_WHITE_BLACK_THRESHOLD, 255, cv2.THRESH_BINARY_INV)
+        debug_save_image(im_th)
         self.filter_biggest_blob(im_th)
+        debug_save_image(im_th)
         roi = cv2.resize(im_th.copy(), (28, 28), interpolation=cv2.INTER_AREA)
 
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
