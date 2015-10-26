@@ -6,6 +6,8 @@ class ToolbarController:
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
+        # counter to differentiate field name
+        self.counter = 0
 
         self.ui.actionZoomIn.triggered.connect(self.on_zoom_in_triggered)
         self.ui.actionZoomOut.triggered.connect(self.on_zoom_out_triggered)
@@ -40,4 +42,5 @@ class ToolbarController:
         if rect is not None:
             template = self.mainwindow.template_view_controller.selected_template.template
             self.mainwindow.template_view_controller.tmp_rect = None
-            template.add_field("default", rect)
+            template.add_field("default" + str(self.counter), rect)
+            self.counter += 1
