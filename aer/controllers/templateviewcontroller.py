@@ -1,5 +1,6 @@
 from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui
+from aer.config.configconstants import TEMPLATE_IMAGE_ZOOM
 
 from aer.domain.template import Template
 from aer.domain.templatefile import TemplateFile
@@ -11,6 +12,7 @@ class TemplateViewController:
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
         self.ui = mainwindow.ui
+        self.config = mainwindow.config_manager
 
         self.ui.templateTextEdit.textChanged.connect(self.template_text_changed)
         self.ui.templateViewLabel.mousePressed.connect(self.on_mouse_press)
@@ -22,7 +24,7 @@ class TemplateViewController:
         self.tmp_rect = None
         self._default_exam = None
         self._selected_template = None
-        self._scale = 1.0
+        self._scale = self.config.get_property(TEMPLATE_IMAGE_ZOOM, 1.0)
 
     @property
     def scale(self):
@@ -127,3 +129,4 @@ class TemplateViewController:
                 self.scale += 0.1
             if delta < 0 and self.scale >= 0.2:
                 self.scale -= 0.1
+            self.config.set_property(TEMPLATE_IMAGE_ZOOM, self.scale)
