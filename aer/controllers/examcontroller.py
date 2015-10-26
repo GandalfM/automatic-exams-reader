@@ -16,7 +16,7 @@ class ExamController:
 
         self.exams = self.config.get_property(EXAMS_LOADED, [])
         self._selected_exam = None
-        self._scale = 1.0
+        self._scale = self.config.get_property(EXAM_IMAGE_ZOOM, 1.0)
         self.drawing = Drawing()
         self.ui.examListView.clicked.connect(self.on_exam_text_selection)
 
@@ -27,6 +27,7 @@ class ExamController:
     @scale.setter
     def scale(self, value):
         self._scale = value
+        self.config.set_property(EXAM_IMAGE_ZOOM, self._scale)
         self._draw_exam()
 
     def on_exam_text_selection(self, index):

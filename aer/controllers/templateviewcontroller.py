@@ -33,6 +33,7 @@ class TemplateViewController:
     @scale.setter
     def scale(self, value):
         self._scale = value
+        self.config.set_property(TEMPLATE_IMAGE_ZOOM, self._scale)
         self._draw_template()
 
     @property
@@ -129,4 +130,3 @@ class TemplateViewController:
                 self.scale += 0.1
             if delta < 0 and self.scale >= 0.2:
                 self.scale -= 0.1
-            self.config.set_property(TEMPLATE_IMAGE_ZOOM, self.scale)
