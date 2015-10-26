@@ -76,6 +76,8 @@ class TemplateViewController:
         try:
             template = Template.from_json(data)
             self._selected_template.template = template
+            self._selected_template.template.templateChanged.connect(self._draw_template)
+            self._selected_template.template.templateChanged.connect(self._change_text)
             color = QtGui.QColor("white")
         except (ValueError, Exception):
             color = QtGui.QColor("#ff9999")
