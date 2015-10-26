@@ -20,6 +20,9 @@ class Recognizer:
         result = {}
         for field_name, field_image in extracted_fields.items():
             single_character_images = self.field_cutter.cut_field(field_image)
-            recognized_str = ''.join([str(self.ocr.from_image(char)) for char in single_character_images])
-            result[field_name] = recognized_str
+            field = []
+            for row in single_character_images:
+                recognized_str = ''.join([str(self.ocr.from_image(char)) for char in row])
+                field.append(recognized_str)
+            result[field_name] = field
         return result

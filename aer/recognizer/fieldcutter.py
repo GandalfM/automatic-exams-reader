@@ -51,9 +51,46 @@ class FieldCutter:
             height_border_insurance = rect[2] * 0.025
             digit = img[rect[1] + width_border_insurance:rect[1] + rect[3] - width_border_insurance,
                     rect[0] + height_border_insurance: rect[0] + rect[2] - height_border_insurance]
-            fields.append(Image.fromarray(digit))
 
-        return fields
+            # it's the first image
+            fields.append((rect, Image.fromarray(digit)))
+
+        return self._sort_fields(fields)
+
+    def _sort_fields(self, fields):
+        """
+        Sort fields.
+        Return fields sorted in rows
+
+        :param fields: list
+        :return:
+        """
+        if not fields:
+            return []
+
+        average_height = sum(map(lambda field: field[0][2], fields)) / len(fields)
+
+        sorted_by_y = sorted(fields, key=lambda field: field[0][1])
+
+        array_fields = []
+        row = []
+        y = sorted_by_y[0][0][1]
+
+        for field in sorted_by_y:
+            if field[0][1] > y + average_height / 2:
+                array_fields.append(row)
+                row = [field]
+                y = field[0][1]
+            else:
+                row.append(field)
+
+        array_fields.append(row)
+
+        result = []
+        for row in array_fields:
+            row.sort(key=lambda field: field[0][0])
+            result.append(list(map(lambda field: field[1], row)))
+        return result
 
     def has_similar_shape(self, rect1, rect2):
         return abs(rect1[2] - rect2[2]) < self.delta and abs(rect1[3] - rect2[3]) < self.delta
