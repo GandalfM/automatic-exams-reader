@@ -48,7 +48,7 @@ class MenuController:
     def on_exam_proceed_template_triggered(self):
         progressDialog = QProgressDialog(self.mainwindow)
 
-        self.ocr_task.template = self.mainwindow.template_list_controller.selected_template
+        self.ocr_task.template = self.mainwindow.template_view_controller.selected_template.template
         self.ocr_task.exams = self.mainwindow.examcontroller.exams
         self.ocr_task.finished.connect(lambda: progressDialog.close())
         progressDialog.setWindowTitle("Template proceed")

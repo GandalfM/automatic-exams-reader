@@ -10,6 +10,7 @@
 * python3-scikit-image
 
 ### Run
+    export PYTHONPATH=$PYTHONPATH:`pwd`
 	cd aer
 	python3 convert-ui.py
 	python3 main.py

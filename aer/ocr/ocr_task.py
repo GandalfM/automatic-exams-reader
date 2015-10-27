@@ -22,8 +22,7 @@ class OcrTask(QThread):
             self.finished.emit()
             return
 
-        template_file = TemplateFile(self.template)
-        template = template_file.template
+        template = self.template
         recognizer = Recognizer(template)
 
         for exam in self.exams:
