@@ -42,5 +42,8 @@ class ToolbarController:
         if rect is not None:
             template = self.mainwindow.template_view_controller.selected_template.template
             self.mainwindow.template_view_controller.tmp_rect = None
+            while template.field_exists("default" + str(self.counter)):
+                self.counter += 1
+
             template.add_field("default" + str(self.counter), rect)
             self.counter += 1

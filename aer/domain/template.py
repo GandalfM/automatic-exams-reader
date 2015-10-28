@@ -27,6 +27,9 @@ class Template(QObject):
         self._fields[name] = rect
         self.templateChanged.emit()
 
+    def field_exists(self, name):
+        return name in self._fields
+
     def report_builder(self):
         return ReportTemplateBuilder(self)
 
