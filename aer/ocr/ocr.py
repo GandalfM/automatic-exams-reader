@@ -46,6 +46,8 @@ class Ocr:
 
     def filter_biggest_blob(self, image):
         _, labels, stats, _ = cv2.connectedComponentsWithStats(image, self.connectivity)
+        if len(stats) == 1:
+            return image
         tmp = np.argwhere(stats[1:, 4] == max(stats[1:, 4]))
         idx = (labels == tmp[0][0] + 1)
         mask = np.zeros(image.shape, np.uint8)
@@ -80,7 +82,6 @@ class Ocr:
 
         roi = cv2.resize(canny_image.copy(), (28, 28))
         # debug_save_image(roi, "small")
-
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
         return int(nbr[0])
