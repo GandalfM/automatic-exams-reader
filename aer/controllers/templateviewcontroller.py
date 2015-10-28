@@ -47,6 +47,7 @@ class TemplateViewController:
             size = (self._default_exam.width(), self._default_exam.height())
         self._selected_template = TemplateFile(filename, size)
         self._selected_template.statusChanged.connect(self._draw_template)
+        self._selected_template.statusChanged.connect(self._change_title)
         self._selected_template.template.templateChanged.connect(self._draw_template)
         self._selected_template.template.templateChanged.connect(self._change_text)
         self._change_text()
@@ -73,6 +74,9 @@ class TemplateViewController:
         content = self._selected_template.template.to_json()
         self._selected_template.changed = True
         self.ui.templateTextEdit.setText(content)
+
+    def _change_title(self):
+        self.mainwindow.setWindowTitle(self.mainwindow.WINDOW_TITLE + " - " + self.selected_template.file.name)
 
     def template_text_changed(self):
         data = self.ui.templateTextEdit.toPlainText()

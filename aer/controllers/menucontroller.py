@@ -91,6 +91,7 @@ class MenuController:
                     self.mainwindow.template_list_controller.templates = templates
                     index = self.ui.templateListView.selectionModel().model().createIndex(templates.index(filename), 0)
                     self.ui.templateListView.selectionModel().select(index, QItemSelectionModel.Select)
+                    self.mainwindow.template_view_controller.selected_template = file.name
 
     def save_file(self, file, template):
         file.seek(0)

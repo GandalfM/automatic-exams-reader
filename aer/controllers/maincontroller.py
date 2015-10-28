@@ -11,6 +11,8 @@ from aer.views.mainwindow import Ui_MainWindow
 
 class MainController(QMainWindow):
 
+    WINDOW_TITLE = "Automatic Exams Reader"
+
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
