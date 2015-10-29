@@ -1,3 +1,4 @@
+import os
 from PyQt5.QtCore import QStringListModel
 from aer.config.configconstants import *
 
@@ -10,8 +11,12 @@ class TemplateListController:
         self.ui = mainwindow.ui
         self._template_view_controller = mainwindow.template_view_controller
 
-        self.templates = self.config.get_property(TEMPLATES_LOADED, [])
+        templates = self.config.get_property(TEMPLATES_LOADED, [])
+        for temp in templates:
+            if not os.path.exists(temp):
+                templates.remove(temp)
 
+        self.templates = templates
         self._selected_template = None
         self.ui.templateListView.clicked.connect(self.on_template_text_selection)
 

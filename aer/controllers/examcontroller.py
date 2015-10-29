@@ -1,3 +1,4 @@
+import os
 from PIL import Image
 
 from PyQt5.QtCore import QStringListModel
@@ -16,7 +17,12 @@ class ExamController:
         self.template_view_controller = mainwindow.template_view_controller
         self.ui.examViewLabel.wheelScrolled.connect(self.on_wheel_scroll)
 
-        self.exams = self.config.get_property(EXAMS_LOADED, [])
+        exams = self.config.get_property(EXAMS_LOADED, [])
+        for ex in exams:
+            if not os.path.exists(ex):
+                exams.remove(ex)
+
+        self.exams = exams
         self._selected_exam = None
         self._scale = self.config.get_property(EXAM_IMAGE_ZOOM, 1.0)
         self.drawing = Drawing()
