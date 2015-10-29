@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal
+
 from aer.ocr.ocr import *
 from aer.recognizer.recognizer import Recognizer
-from aer.domain.templatefile import TemplateFile
 
 
 class OcrTask(QThread):
@@ -12,9 +12,10 @@ class OcrTask(QThread):
         super().__init__()
         self.exams = []
         self.template = None
+        self.mark = None
 
     def _process_exam(self, exam, recognizer):
-        result = recognizer.recognize_from_path(exam)
+        result = recognizer.recognize_from_path(exam, self.mark)
         print(result)
 
     def run(self):

@@ -1,3 +1,4 @@
+from aer.domain.mark import Mark
 from aer.utils.utils import combine
 
 
@@ -21,5 +22,16 @@ class FieldExtractor:
 
     def extract_fields_from_exam(self, exam_image):
         extract_function = extract_function_factory(exam_image)
-        extracted_fields = {k: extract_function(v) for k, v in self.template.get_fields().items()}
+        extracted_fields = {k: extract_function(v) for k, v in self.template.get_fields().items() if k != "mark"}
         return extracted_fields
+
+    def extract_mark_from_exam(self, exam_image):
+        extract_function = extract_function_factory(exam_image)
+        if "mark" not in self.template.get_fields():
+            return None
+
+        extracted_field = extract_function(self.template.get_fields()["mark"])
+        mark = Mark()
+        mark.image = extracted_field
+        mark.place = self.template.get_fields()["mark"][:2]
+        return mark

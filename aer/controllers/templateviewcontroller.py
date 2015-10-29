@@ -1,10 +1,10 @@
-from PyQt5.QtGui import QPixmap
 from PyQt5 import QtGui
-from aer.config.configconstants import TEMPLATE_IMAGE_ZOOM
 
+from aer.config.configconstants import TEMPLATE_IMAGE_ZOOM
 from aer.domain.template import Template
 from aer.domain.templatefile import TemplateFile
 from aer.image.drawing import Drawing
+from aer.utils.imageutil import pil2pixmap
 
 
 class TemplateViewController:
@@ -44,7 +44,7 @@ class TemplateViewController:
     def selected_template(self, filename):
         size = None
         if self._default_exam is not None:
-            size = (self._default_exam.width(), self._default_exam.height())
+            size = (self._default_exam.size[0], self._default_exam.size[1])
         self._selected_template = TemplateFile(filename, size)
         self._selected_template.statusChanged.connect(self._draw_template)
         self._selected_template.statusChanged.connect(self._change_title)
@@ -68,7 +68,7 @@ class TemplateViewController:
                 image = self.drawing.draw_template(self._default_exam, self._scale, self._selected_template.template, self.tmp_rect)
             else:
                 image = self.drawing.resize(self._default_exam, self._scale)
-            self.ui.templateViewLabel.setPixmap(QPixmap.fromImage(image))
+            self.ui.templateViewLabel.setPixmap(pil2pixmap(image))
 
     def _change_text(self):
         content = self._selected_template.template.to_json()

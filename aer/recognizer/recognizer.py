@@ -1,7 +1,11 @@
+import numpy as np
+from PIL import Image
+
 from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr import Ocr
 from aer.recognizer.fieldcutter import FieldCutter
-from PIL import Image
+import cv2
+
 
 class Recognizer:
     def __init__(self, template):
@@ -11,8 +15,10 @@ class Recognizer:
         self.ocr = Ocr()
         self.ocr.load_classifier()
 
-    def recognize_from_path(self, path):
+    def recognize_from_path(self, path, mark):
         image = Image.open(path)
+        if mark is not None:
+            image = self.translate_image(image, mark)
         return self.recognize(image)
 
     def recognize(self, exam_image):
@@ -26,3 +32,15 @@ class Recognizer:
                 field.append(recognized_str)
             result[field_name] = field
         return result
+
+    def translate_image(self, image, mark):
+        mat = np.array(image)
+        temp = np.array(mark.image)
+        res = cv2.matchTemplate(mat, temp, cv2.TM_CCOEFF_NORMED)
+        minmax = cv2.minMaxLoc(res)
+        rows, cols, _ = mat.shape
+        vector = (mark.place[0] - minmax[3][0], mark.place[1] - minmax[3][1])
+
+        m = np.float32([[1, 0, vector[0]], [0, 1, vector[1]]])
+        dst = cv2.warpAffine(mat, m, (cols, rows))
+        return Image.fromarray(dst)

@@ -1,5 +1,8 @@
-import cv2
 import os
+
+from PyQt5 import QtGui
+
+import cv2
 
 _tags = {}
 _parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -31,3 +34,9 @@ def debug_save_image(image, tag=""):
 
 def kernel_ellipse(size):
     return cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (size, size))
+
+def pil2pixmap(image):
+    data = image.convert("RGB").tostring("raw", "RGB")
+    qim = QtGui.QImage(data, image.size[0], image.size[1], QtGui.QImage.Format_RGB888)
+    pixmap = QtGui.QPixmap.fromImage(qim)
+    return pixmap

@@ -1,4 +1,4 @@
-from PyQt5 import QtGui
+from PIL import Image
 import numpy as np
 
 import cv2
@@ -14,22 +14,8 @@ class Drawing:
         self._font_size = 1.5
         self._text_margin = 10
 
-    def _image_to_mat(self, image):
-        image = image.convertToFormat(QtGui.QImage.Format_RGB888)
-
-        width = image.width()
-        height = image.height()
-
-        ptr = image.bits()
-        ptr.setsize(image.byteCount())
-        mat = np.array(ptr).reshape(height, width, 3)
-        return mat
-
-    def _mat_to_image(self, mat):
-        return QtGui.QImage(mat.data, mat.shape[1], mat.shape[0], QtGui.QImage.Format_RGB888)
-
     def draw_template(self, image, scale, template, tmp_rect):
-        mat = self._image_to_mat(image)
+        mat = np.array(image)
 
         # draw all rects
         for name, rect in template.get_fields().items():
@@ -43,10 +29,10 @@ class Drawing:
 
         # resize image to template dimensions
         mat = cv2.resize(mat, None, None, scale, scale)
-        return self._mat_to_image(mat)
+        return Image.fromarray(mat)
 
     def resize(self, image, scale):
-        mat = self._image_to_mat(image)
+        mat = np.array(image)
         mat = cv2.resize(mat, None, None, scale, scale)
-        return self._mat_to_image(mat)
+        return Image.fromarray(mat)
 

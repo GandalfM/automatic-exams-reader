@@ -1,8 +1,10 @@
+from PIL import Image
+
 from PyQt5.QtCore import QStringListModel
-from PyQt5.QtGui import QImage, QPixmap
 
 from aer.config.configconstants import *
 from aer.image.drawing import Drawing
+from aer.utils.imageutil import pil2pixmap
 
 
 class ExamController:
@@ -39,7 +41,7 @@ class ExamController:
 
     @selected_exam.setter
     def selected_exam(self, value):
-        image = QImage(value)
+        image = Image.open(value)
         if self._selected_exam != image:
             self._selected_exam = image
             self.template_view_controller.default_exam = image
@@ -55,13 +57,13 @@ class ExamController:
         model = QStringListModel(map(lambda x: str(x), value))
         self.ui.examListView.setModel(model)
         if self._exams:
-            image = QImage(self._exams[0])
+            image = Image.open(self._exams[0])
             self.template_view_controller.default_exam = image
         self.config.set_property(EXAMS_LOADED, value)
 
     def _draw_exam(self):
         image = self.drawing.resize(self._selected_exam, self._scale)
-        self.ui.examViewLabel.setPixmap(QPixmap.fromImage(image))
+        self.ui.examViewLabel.setPixmap(pil2pixmap(image))
 
     def on_wheel_scroll(self, event):
         if self.selected_exam is not None:

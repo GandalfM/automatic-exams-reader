@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QFileDialog, QProgressDialog
 from aer.config.configconstants import *
+from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr_task import *
 
 
@@ -46,17 +47,23 @@ class MenuController:
         self.ui.statusbar.showMessage("Loaded {} exams".format(len(filtered)))
 
     def on_exam_proceed_template_triggered(self):
-        progressDialog = QProgressDialog(self.mainwindow)
+        if self.mainwindow.template_view_controller.selected_template is not None:
+            progressDialog = QProgressDialog(self.mainwindow)
 
-        self.ocr_task.template = self.mainwindow.template_view_controller.selected_template.template
-        self.ocr_task.exams = self.mainwindow.examcontroller.exams
-        self.ocr_task.finished.connect(lambda: progressDialog.close())
-        progressDialog.setWindowTitle("Template proceed")
-        progressDialog.setRange(0, 0)
-        progressDialog.setCancelButton(None)
+            template = self.mainwindow.template_view_controller.selected_template.template
+            extractor = FieldExtractor(template)
+            mark = extractor.extract_mark_from_exam(self.mainwindow.template_view_controller.default_exam)
 
-        progressDialog.show()
-        self.ocr_task.start()
+            self.ocr_task.mark = mark
+            self.ocr_task.template = template
+            self.ocr_task.exams = self.mainwindow.examcontroller.exams
+            self.ocr_task.finished.connect(lambda: progressDialog.close())
+            progressDialog.setWindowTitle("Template proceed")
+            progressDialog.setRange(0, 0)
+            progressDialog.setCancelButton(None)
+
+            progressDialog.show()
+            self.ocr_task.start()
 
     def on_template_save(self):
         template_file = self.mainwindow.template_view_controller.selected_template
