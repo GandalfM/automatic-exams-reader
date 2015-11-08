@@ -2,10 +2,8 @@ from PIL import Image
 from sklearn.externals import joblib
 from sklearn import datasets
 from skimage.feature import hog
-from sklearn.svm import LinearSVC
 import numpy as np
 from aer.utils.imageutil import *
-
 import cv2
 
 
@@ -19,24 +17,9 @@ class Ocr:
         self.__CLASSIFIER_FILE = os.path.join(parent_dir, self.__CLASSIFIER_FILE_NAME)
         self.connectivity = 4
 
-    def create_classifier(self):
-        # source: http://hanzratech.in/2015/02/24/handwritten-digit-recognition-using-opencv-sklearn-and-python.html
-        dataset = datasets.fetch_mldata("MNIST Original")
-        features = np.array(dataset.data, 'int16')
-        labels = np.array(dataset.target, 'int')
-
-        list_hog_fd = []
-        for feature in features:
-            fd = hog(feature.reshape((28, 28)), orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
-            list_hog_fd.append(fd)
-        hog_features = np.array(list_hog_fd, 'float64')
-        self.clf = LinearSVC()
-        self.clf.fit(hog_features, labels)
-        joblib.dump(self.clf, self.__CLASSIFIER_FILE, compress=3)
-
     def load_classifier(self):
         if not os.path.isfile(self.__CLASSIFIER_FILE):
-            self.create_classifier()
+            raise Exception("Please, create a classifier first. Create will be created after running file learn_classifier.py")
         else:
             self.clf = joblib.load(self.__CLASSIFIER_FILE)
 
@@ -83,5 +66,6 @@ class Ocr:
         roi = cv2.resize(canny_image.copy(), (28, 28))
         # debug_save_image(roi, "small")
         roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
-        nbr = self.clf.predict(np.array([roi_hog_fd], 'float64'))
+        nbr = self.clf.predict(np.array([roi_hog_fd], 'float32'))
+
         return int(nbr[0])

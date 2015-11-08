@@ -13,4 +13,5 @@
     export PYTHONPATH=$PYTHONPATH:`pwd`
 	cd aer
 	python3 convert-ui.py
+	python3 learn_classifier.py
 	python3 main.py

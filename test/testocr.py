@@ -19,9 +19,7 @@ class TestOcr(unittest.TestCase):
         read = self.ocr.from_file("data/ocr/test-image-nine.jpg")
         self.assertEqual(9, read, "Should be {}, read {}".format(9, read))
 
-    def test_real(self):
-        real_test_data_dir = "data/ocr/real"
-
+    def _test_in_directories(self, real_test_data_dir):
         failures = []
 
         files_nu = 0
@@ -45,6 +43,13 @@ class TestOcr(unittest.TestCase):
             message = "Failed {} times of {} - accuracy {}%.\n{}".format(failures_nu, files_nu, (files_nu - failures_nu) / files_nu * 100, result)
             self.fail(message)
 
+    def test_real(self):
+        real_test_data_dir = "data/ocr/real"
+        self._test_in_directories(real_test_data_dir)
+
+    def test_non_handwritten(self):
+        real_test_data_dir = "data/ocr/non-handwritten"
+        self._test_in_directories(real_test_data_dir)
 
 if __name__ == '__main__':
     unittest.main()
