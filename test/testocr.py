@@ -20,21 +20,29 @@ class TestOcr(unittest.TestCase):
         self.assertEqual(9, read, "Should be {}, read {}".format(9, read))
 
     def test_real(self):
-        directory = "data/ocr/real"
+        real_test_data_dir = "data/ocr/real"
 
         failures = []
 
-        files = os.listdir(directory)
-        for file in files:
-            file_path = os.path.join(directory, file)
-            expected = int(file.split("-")[0])
+        files_nu = 0
+        for directory in os.listdir(real_test_data_dir):
+            path = os.path.join(real_test_data_dir, directory)
+            if not os.path.isdir(path):
+                continue
 
-            read = self.ocr.from_file(file_path)
-            if not expected == read:
-                failures.append((file_path, expected, read))
+            expected = int(directory)
+
+            for file in os.listdir(path):
+                files_nu += 1
+                file_path = os.path.join(path, file)
+                read = self.ocr.from_file(file_path)
+                if not expected == read:
+                    failures.append((file_path, expected, read))
+
         if len(failures) != 0:
             result = "\n".join(map(lambda failure: "In file {}, should be {}, read {}".format(failure[0], failure[1], failure[2]), failures))
-            message = "Failed {} times of {}.\n{}".format(len(failures), len(files), result)
+            failures_nu = len(failures)
+            message = "Failed {} times of {} - accuracy {}%.\n{}".format(failures_nu, files_nu, (files_nu - failures_nu) / files_nu * 100, result)
             self.fail(message)
 
 

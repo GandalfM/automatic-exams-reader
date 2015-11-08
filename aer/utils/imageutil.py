@@ -36,7 +36,7 @@ def kernel_ellipse(size):
     return cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (size, size))
 
 def pil2pixmap(image):
-    data = image.convert("RGB").tostring("raw", "RGB")
+    data = image.convert("RGB").tobytes("raw", "RGB")
     qim = QtGui.QImage(data, image.size[0], image.size[1], QtGui.QImage.Format_RGB888)
     pixmap = QtGui.QPixmap.fromImage(qim)
     return pixmap
