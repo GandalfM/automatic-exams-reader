@@ -1,3 +1,5 @@
+from PyQt5.QtWidgets import QInputDialog, QLineEdit
+
 class ToolbarController:
 
     EXAMS_INDEX = 0
@@ -41,9 +43,14 @@ class ToolbarController:
         rect = self.mainwindow.template_view_controller.tmp_rect
         if rect is not None:
             template = self.mainwindow.template_view_controller.selected_template.template
-            self.mainwindow.template_view_controller.tmp_rect = None
             while template.field_exists("default" + str(self.counter)):
                 self.counter += 1
+            default = "default{}".format(self.counter)
+            text, ok = QInputDialog.getText(self.mainwindow, 'Field name', 'Enter field name:',  QLineEdit.Normal, default)
 
-            template.add_field("default" + str(self.counter), rect)
-            self.counter += 1
+            if ok:
+                self.counter += 1
+                template = self.mainwindow.template_view_controller.selected_template.template
+                self.mainwindow.template_view_controller.tmp_rect = None
+
+                template.add_field(text, rect)
