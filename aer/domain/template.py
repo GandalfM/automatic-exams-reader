@@ -16,7 +16,7 @@ class Template(QObject):
         self.size = size
         self._fields = {}
 
-    def add_field(self, name, rect):
+    def add_field(self, name, rect, emit=True):
         if name in self._fields:
             raise Exception("Already have a field with such name", name)
         if len(rect) != 4:
@@ -25,7 +25,8 @@ class Template(QObject):
             raise Exception("The given rectangle does not fit.")
 
         self._fields[name] = rect
-        self.templateChanged.emit()
+        if emit:
+            self.templateChanged.emit()
 
     def field_exists(self, name):
         return name in self._fields
@@ -69,6 +70,14 @@ class Template(QObject):
         template = Template(d["name"], tuple(d["size"]))
         for field in d["rects"]:
             template.add_field(field[0], tuple(field[1]))
+        return template
+
+    @staticmethod
+    def from_json_no_event(s):
+        d = json.loads(s)
+        template = Template(d["name"], tuple(d["size"]))
+        for field in d["rects"]:
+            template.add_field(field[0], tuple(field[1]), False)
         return template
 
     @staticmethod
