@@ -83,7 +83,7 @@ class TemplateViewController:
         data = self.ui.templateTextEdit.toPlainText()
         try:
             if self.selected_template.template.to_json() != data:
-                template = Template.from_json_no_event(data)
+                template = Template.from_json(data)
                 self._selected_template.template = template
                 self._selected_template.template.templateChanged.connect(self._draw_template)
                 self._selected_template.template.templateChanged.connect(self._change_text)
