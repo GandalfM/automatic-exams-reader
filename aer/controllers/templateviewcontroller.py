@@ -20,11 +20,13 @@ class TemplateViewController:
         self.ui.templateViewLabel.mouseMove.connect(self.on_mouse_move)
         self.ui.templateViewLabel.wheelScrolled.connect(self.on_wheel_scroll)
 
-        self.drawing = Drawing()
         self.tmp_rect = None
         self._default_exam = None
         self._selected_template = None
         self._scale = self.config.get_property(TEMPLATE_IMAGE_ZOOM, 1.0)
+        self.mouse_pressed = False
+
+        self.drawing = Drawing(None, self._scale)
 
     @property
     def scale(self):
@@ -34,6 +36,7 @@ class TemplateViewController:
     def scale(self, value):
         self._scale = value
         self.config.set_property(TEMPLATE_IMAGE_ZOOM, self._scale)
+        self.drawing = Drawing(self.default_exam, self._scale)
         self._draw_template()
 
     @property
@@ -60,12 +63,13 @@ class TemplateViewController:
     @default_exam.setter
     def default_exam(self, exam):
         self._default_exam = exam
+        self.drawing = Drawing(exam, self.scale)
         self._draw_template()
 
     def _draw_template(self):
         if self._default_exam is not None:
             if self._selected_template is not None:
-                image = self.drawing.draw_template(self._default_exam, self._scale, self._selected_template.template, self.tmp_rect)
+                image = self.drawing.draw_template(self._selected_template.template, self.tmp_rect)
             else:
                 image = self.drawing.resize(self._default_exam, self._scale)
             self.ui.templateViewLabel.setPixmap(pil2pixmap(image))
@@ -94,6 +98,7 @@ class TemplateViewController:
         self.ui.templateTextEdit.setPalette(palette)
 
     def on_mouse_press(self, event):
+        self.mouse_pressed = True
         if self._selected_template is not None:
             x = int(event.pos().x() / self._scale)
             y = int(event.pos().y() / self._scale)
@@ -105,28 +110,29 @@ class TemplateViewController:
 
     def on_mouse_move(self, event):
         if self._selected_template is not None:
+            if self.mouse_pressed and self.tmp_rect is not None:
+                self._common_move(event.pos())
             pass
+
+    def _common_move(self, pos):
+        m_x, m_y = int(pos.x() / self._scale), int(pos.y() / self._scale)
+        x, y, w, h = self.tmp_rect
+        self.tmp_rect = (x, y, m_x - x, m_y - y)
+        if self.tmp_rect[2] < 0:
+            l = list(self.tmp_rect)
+            l[2] = abs(l[2])
+            l[0] -= l[2]
+            self.tmp_rect = tuple(l)
+        if self.tmp_rect[3] < 0:
+            l = list(self.tmp_rect)
+            l[3] = abs(l[3])
+            l[1] -= l[3]
+            self.tmp_rect = tuple(l)
+        self._draw_template()
 
     def on_mouse_release(self, event):
         if self._selected_template is not None:
-            x = int(event.pos().x() / self._scale)
-            y = int(event.pos().y() / self._scale)
-            if self.tmp_rect[2] == 0 and self.tmp_rect[3] == 0:
-                tmp_rect = self.tmp_rect
-                self.tmp_rect = (tmp_rect[0], tmp_rect[1], x - tmp_rect[0], y - tmp_rect[1])
-                if self.tmp_rect[2] < 0:
-                    l = list(self.tmp_rect)
-                    l[2] = abs(l[2])
-                    l[0] -= l[2]
-                    self.tmp_rect = tuple(l)
-                if self.tmp_rect[3] < 0:
-                    l = list(self.tmp_rect)
-                    l[3] = abs(l[3])
-                    l[1] -= l[3]
-                    self.tmp_rect = tuple(l)
-                if self.tmp_rect[2] == 0 or self.tmp_rect[3] == 0:
-                    self.tmp_rect = None
-            self._draw_template()
+            self.mouse_pressed = False
 
     def on_wheel_scroll(self, event):
         if self.default_exam is not None:
