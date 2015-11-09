@@ -83,6 +83,8 @@ class MenuController:
         if template_file is not None:
             fd = QFileDialog(self.mainwindow, "Save template", self.template_dialog_path)
             fd.setDefaultSuffix("template")
+            filters = ["Template files (*.template)",  "JSON files (*.json)", "Any files (*)"]
+            fd.setNameFilters(filters)
             fd.setAcceptMode(QFileDialog.AcceptSave)
             if fd.exec():
                 filename = fd.selectedFiles()[0]
