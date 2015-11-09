@@ -76,8 +76,7 @@ class TemplateViewController:
         self.ui.templateTextEdit.setText(content)
 
     def _change_title(self):
-        pass
-        # self.mainwindow.setWindowTitle(self.mainwindow.WINDOW_TITLE + " - " + self.selected_template.file.name)
+        self.mainwindow.setWindowTitle(self.mainwindow.WINDOW_TITLE + " - " + self.selected_template.file.name)
 
     def template_text_changed(self):
         data = self.ui.templateTextEdit.toPlainText()
