@@ -24,7 +24,6 @@ class TemplateViewController:
         self._default_exam = None
         self._selected_template = None
         self._scale = self.config.get_property(TEMPLATE_IMAGE_ZOOM, 1.0)
-        print(self.scale)
         self.mouse_pressed = False
 
         self.drawing = Drawing(None, self._scale)
@@ -70,7 +69,6 @@ class TemplateViewController:
     def _draw_template(self):
         if self._default_exam is not None:
             if self._selected_template is not None:
-                print("redrawing template")
                 image = self.drawing.draw_template(self._selected_template.template, self.tmp_rect)
             else:
                 image = self.drawing.resize(self._default_exam, self._scale)
@@ -120,7 +118,6 @@ class TemplateViewController:
     def _common_move(self, pos):
         m_x, m_y = int(pos.x() / self._scale), int(pos.y() / self._scale)
         x, y, w, h = self.tmp_rect
-        # if w == 0 and h == 0:
         self.tmp_rect = (x, y, m_x - x, m_y - y)
         if self.tmp_rect[2] < 0:
             l = list(self.tmp_rect)
@@ -132,14 +129,11 @@ class TemplateViewController:
             l[3] = abs(l[3])
             l[1] -= l[3]
             self.tmp_rect = tuple(l)
-        # if self.tmp_rect[2] == 0 or self.tmp_rect[3] == 0:
-        #    self.tmp_rect = None
         self._draw_template()
 
     def on_mouse_release(self, event):
         if self._selected_template is not None:
             self.mouse_pressed = False
-
 
     def on_wheel_scroll(self, event):
         if self.default_exam is not None:
