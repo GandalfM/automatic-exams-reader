@@ -82,10 +82,11 @@ class TemplateViewController:
     def template_text_changed(self):
         data = self.ui.templateTextEdit.toPlainText()
         try:
-            template = Template.from_json(data)
-            self._selected_template.template = template
-            self._selected_template.template.templateChanged.connect(self._draw_template)
-            self._selected_template.template.templateChanged.connect(self._change_text)
+            if self.selected_template.template.to_json() != data:
+                template = Template.from_json_no_event(data)
+                self._selected_template.template = template
+                self._selected_template.template.templateChanged.connect(self._draw_template)
+                self._selected_template.template.templateChanged.connect(self._change_text)
             color = QtGui.QColor("white")
         except (ValueError, Exception):
             color = QtGui.QColor("#ff9999")
