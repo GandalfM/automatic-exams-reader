@@ -107,6 +107,7 @@ class TemplateViewController:
                 self.tmp_rect = (x, y, 0, 0)
             else:
                 self.tmp_rect = tmp_rect
+            self._draw_template()
 
     def on_mouse_move(self, event):
         if self._selected_template is not None:
@@ -132,6 +133,10 @@ class TemplateViewController:
 
     def on_mouse_release(self, event):
         if self._selected_template is not None:
+            x, y, w, h = self.tmp_rect
+            if w == 0 and h == 0:
+                self.tmp_rect = None
+                self._draw_template()
             self.mouse_pressed = False
 
     def on_wheel_scroll(self, event):
