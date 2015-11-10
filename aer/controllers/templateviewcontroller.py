@@ -119,16 +119,6 @@ class TemplateViewController:
         m_x, m_y = int(pos.x() / self._scale), int(pos.y() / self._scale)
         x, y, w, h = self.tmp_rect
         self.tmp_rect = (x, y, m_x - x, m_y - y)
-        if self.tmp_rect[2] < 0:
-            l = list(self.tmp_rect)
-            l[2] = abs(l[2])
-            l[0] -= l[2]
-            self.tmp_rect = tuple(l)
-        if self.tmp_rect[3] < 0:
-            l = list(self.tmp_rect)
-            l[3] = abs(l[3])
-            l[1] -= l[3]
-            self.tmp_rect = tuple(l)
         self._draw_template()
 
     def on_mouse_release(self, event):
