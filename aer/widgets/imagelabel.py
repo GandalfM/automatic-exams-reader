@@ -11,6 +11,7 @@ class ImageLabel(QLabel):
     mouseReleased = pyqtSignal(QMouseEvent)
     mouseMove = pyqtSignal(QMouseEvent)
     wheelScrolled = pyqtSignal(QWheelEvent)
+    keyPressed = pyqtSignal(QKeyEvent)
 
     def __init__(self, *__args):
         super().__init__(*__args)
@@ -30,3 +31,6 @@ class ImageLabel(QLabel):
             self.wheelScrolled.emit(event)
         else:
             super().wheelEvent(event)
+
+    def keyPressEvent(self, event):
+        self.keyPressed.emit(event)

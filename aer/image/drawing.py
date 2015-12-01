@@ -29,10 +29,12 @@ class Drawing:
     def _transformed_rect(self, rect):
         return [x * self.scale for x in rect]
 
-    def draw_template(self, template, tmp_rect):
+    def draw_template(self, template, tmp_rect, editing_pos):
         draw = Draw(self.canvas)
         self.canvas.paste(self.base_img)
         for name, rect in template.get_fields().items():
+            if editing_pos is not None and editing_pos[0] == rect[0] and editing_pos[1] == rect[1]:
+                continue
             self._draw_rect(draw, self._transformed_rect(rect), text=name)
 
         if tmp_rect is not None:

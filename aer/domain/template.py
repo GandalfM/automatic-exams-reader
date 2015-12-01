@@ -37,14 +37,26 @@ class Template(QObject):
     def get_fields(self):
         return self._fields
 
-    def remove_field_at(self, x, y):
+    def get_field_at(self, x, y):
         for key, rect in self._fields.items():
             if Template._point_inside_rect(rect, x, y):
-                del self._fields[key]
-                self.templateChanged.emit()
-                return rect
-
+                return key, rect
         return None
+
+    def move_field_to(self, key, offset_x, offset_y):
+        if key in self._fields:
+            x, y, w, h = self._fields[key]
+            self._fields[key] = [x + offset_x, y + offset_y, w, h]
+            self.templateChanged.emit()
+            return self._fields[key]
+
+    def remove_field_at(self, x, y):
+        result = self.get_field_at(x, y)
+        if result:
+            del self._fields[result[0]]
+            self.templateChanged.emit()
+            return result
+
 
     @staticmethod
     def _point_inside_rect(rect, x, y):
