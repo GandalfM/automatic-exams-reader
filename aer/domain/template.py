@@ -43,10 +43,10 @@ class Template(QObject):
                 return key, rect
         return None
 
-    def move_field_to(self, key, offset_x, offset_y):
+    def move_field_to(self, key, new_x, new_y):
         if key in self._fields:
             x, y, w, h = self._fields[key]
-            self._fields[key] = [x + offset_x, y + offset_y, w, h]
+            self._fields[key] = [new_x, new_y, w, h]
             self.templateChanged.emit()
             return self._fields[key]
 

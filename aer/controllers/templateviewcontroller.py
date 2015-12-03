@@ -131,6 +131,7 @@ class TemplateViewController:
                     key, val = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
                     self._selected_template.template.move_field_to(key, self.tmp_rect[0], self.tmp_rect[1])
                 self.original_rect_pos = None
+                self.tmp_rect = None
             self._draw_template()
         else:
             if self._selected_template is not None:
