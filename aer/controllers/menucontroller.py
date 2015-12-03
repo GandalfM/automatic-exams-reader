@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QItemSelectionModel
-from PyQt5.QtWidgets import QFileDialog, QProgressDialog
+from PyQt5.QtWidgets import QFileDialog, QProgressDialog, QMessageBox
 from aer.config.configconstants import *
 from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr_task import *
@@ -48,9 +48,12 @@ class MenuController:
 
     def on_exam_proceed_template_triggered(self):
         if self.mainwindow.template_view_controller.selected_template is not None:
+            template = self.mainwindow.template_view_controller.selected_template.template
+            if not template.field_exists("mark"):
+                QMessageBox.warning(self.mainwindow, "Warning", "No mark field detected")
+
             progressDialog = QProgressDialog(self.mainwindow)
 
-            template = self.mainwindow.template_view_controller.selected_template.template
             extractor = FieldExtractor(template)
             mark = extractor.extract_mark_from_exam(self.mainwindow.template_view_controller.default_exam)
 

@@ -18,7 +18,7 @@ class Template(QObject):
 
     def add_field(self, name, rect, emit=True):
         if name in self._fields:
-            raise Exception("Already have a field with such name", name)
+            raise Exception("Already have a field with name " + name)
         if len(rect) != 4:
             raise Exception("The rect parameter must be an iterable of size 4.")
         if rect[0] + rect[2] > self.size[0] or rect[1] + rect[3] > self.size[1]:

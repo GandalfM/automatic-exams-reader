@@ -13,6 +13,7 @@ class Mode(Enum):
     CREATE = 1
     EDIT = 2
 
+
 class TemplateViewController:
     def __init__(self, mainwindow):
         self.mainwindow = mainwindow
@@ -187,4 +188,3 @@ class TemplateViewController:
             self.original_rect_pos = None
             self.tmp_rect = None
         self._draw_template()
-        print(event)

@@ -14,6 +14,7 @@ class ToolbarController:
         self.ui.actionZoomIn.triggered.connect(self.on_zoom_in_triggered)
         self.ui.actionZoomOut.triggered.connect(self.on_zoom_out_triggered)
         self.ui.actionAddField.triggered.connect(self.on_add_field_triggered)
+        self.ui.actionAddMark.triggered.connect(self.on_add_mark_triggered)
 
     def on_zoom_in_triggered(self):
         if self.ui.mainTabs.currentIndex() == ToolbarController.EXAMS_INDEX:
@@ -40,17 +41,30 @@ class ToolbarController:
                 controller.scale += 0.1
 
     def on_add_field_triggered(self):
+        self.on_add_rectangle()
+
+    def on_add_mark_triggered(self):
+        self.on_add_rectangle("mark")
+
+    def on_add_rectangle(self, name=None):
         rect = self.mainwindow.template_view_controller.tmp_rect
         if rect is not None:
             template = self.mainwindow.template_view_controller.selected_template.template
-            while template.field_exists("default" + str(self.counter)):
-                self.counter += 1
-            default = "default{}".format(self.counter)
-            text, ok = QInputDialog.getText(self.mainwindow, 'Field name', 'Enter field name:',  QLineEdit.Normal, default)
+            if name is None:
+                while template.field_exists("default" + str(self.counter)):
+                    self.counter += 1
+                default = "default{}".format(self.counter)
+                name, ok = QInputDialog.getText(self.mainwindow, 'Field name', 'Enter field name:', QLineEdit.Normal, default)
 
-            if ok:
+                if not ok:
+                    return
+                
                 self.counter += 1
-                template = self.mainwindow.template_view_controller.selected_template.template
-                self.mainwindow.template_view_controller.tmp_rect = None
 
-                template.add_field(text, rect)
+            template = self.mainwindow.template_view_controller.selected_template.template
+            self.mainwindow.template_view_controller.tmp_rect = None
+            try:
+                template.add_field(name, rect)
+            except Exception as ex:
+                self.mainwindow.template_view_controller.tmp_rect = rect
+                self.ui.statusbar.showMessage(str(ex))
