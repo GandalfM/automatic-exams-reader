@@ -38,6 +38,15 @@ class Ocr:
         mask[idx] = 255
         return mask
 
+    def trim_image(self, image):
+        non_zero_y, non_zero_x = np.nonzero(image)
+        min_x = np.amin(non_zero_x)
+        max_x = min(np.amax(non_zero_x) + 1, image.shape[1])
+        min_y = np.amin(non_zero_y)
+        max_y = min(np.amax(non_zero_y) + 1, image.shape[0])
+
+        return image[min_y:max_y, min_x:max_x]
+
     def from_image(self, image, roi=None):
         self.load_classifier()
 
@@ -61,7 +70,10 @@ class Ocr:
 
         # debug_save_image(canny_image, "canny")
         canny_image = self.filter_biggest_blob(canny_image)
-        # debug_save_image(canny_image, "canny-biggest")
+
+        canny_image = self.trim_image(canny_image)
+
+        # debug_save_image(canny_image, "before-resize")
 
         roi = cv2.resize(canny_image.copy(), (28, 28))
         # debug_save_image(roi, "small")
