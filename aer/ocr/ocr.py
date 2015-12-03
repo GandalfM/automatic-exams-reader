@@ -38,6 +38,17 @@ class Ocr:
         mask[idx] = 255
         return mask
 
+    def filter_big_blobs(self, image):
+        _, labels, stats, _ = cv2.connectedComponentsWithStats(image, self.connectivity)
+        if len(stats) == 1:
+            return image
+        tmp = np.argwhere(stats[1:, 4] > 0.5 * max(stats[1:, 4]))
+        idx = (labels == tmp[0][0] + 1)
+        mask = np.zeros(image.shape, np.uint8)
+        mask.fill(0)
+        mask[idx] = 255
+        return mask
+
     def trim_image(self, image):
         non_zero_y, non_zero_x = np.nonzero(image)
         min_x = np.amin(non_zero_x)
@@ -61,23 +72,18 @@ class Ocr:
             height = int(roi[3])
             open_cv_image = open_cv_image[y:y+height, x: x + width]
 
-        im_gray = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
-        canny_image = cv2.Canny(im_gray, 70, 255)
-        # debug_save_image(canny_image, "first-canny")
+        im = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
+        im = cv2.adaptiveThreshold(im, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
-        canny_image = cv2.dilate(canny_image, kernel_ellipse(3))
-        canny_image = cv2.morphologyEx(canny_image, cv2.MORPH_CLOSE, kernel_ellipse(5))
+        im = self.filter_big_blobs(im)
+        im = self.trim_image(im)
 
-        # debug_save_image(canny_image, "canny")
-        canny_image = self.filter_biggest_blob(canny_image)
+        # debug_save_image(im, "before-resize")
 
-        canny_image = self.trim_image(canny_image)
+        im = cv2.resize(im.copy(), (28, 28))
 
-        # debug_save_image(canny_image, "before-resize")
-
-        roi = cv2.resize(canny_image.copy(), (28, 28))
-        # debug_save_image(roi, "small")
-        roi_hog_fd = hog(roi, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
-        nbr = self.clf.predict(np.array([roi_hog_fd], 'float32'))
+        # debug_save_image(im, "resized")
+        hog_val = hog(im, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
+        nbr = self.clf.predict(np.array([hog_val], 'float32'))
 
         return int(nbr[0])
