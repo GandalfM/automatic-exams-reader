@@ -124,7 +124,7 @@ class TemplateViewController:
                 self.tmp_rect = clicked_rect_tuple if clicked_rect_tuple is None else clicked_rect_tuple[1]
                 self.mouse_pos_rect_offset = (x - self.tmp_rect[0], y - self.tmp_rect[1])
                 self.original_rect_pos = (self.tmp_rect[0], self.tmp_rect[1])
-            else:
+            elif self.tmp_rect is not None:
                 x, y, _, __ = self.tmp_rect
                 if self.original_rect_pos != (x, y):
                     o_x, o_y = self.original_rect_pos
