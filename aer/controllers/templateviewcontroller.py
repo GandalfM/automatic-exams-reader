@@ -182,9 +182,17 @@ class TemplateViewController:
                                                                                  self.tmp_rect[1] + 1)
                 self.tmp_rect = None
         if event.key() == QtCore.Qt.Key_E:
-            self.mode = Mode.EDIT
+            self.change_mode(True)
         if event.key() == QtCore.Qt.Key_C:
-            self.mode = Mode.CREATE
+            self.change_mode(False)
             self.original_rect_pos = None
             self.tmp_rect = None
         self._draw_template()
+
+    def change_mode(self, edit):
+        if edit:
+            self.mode = Mode.EDIT
+            self.ui.actionEditMode.setChecked(True)
+        else:
+            self.mode = Mode.CREATE
+            self.ui.actionEditMode.setChecked(False)

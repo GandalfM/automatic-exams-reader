@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
+from aer.controllers.templateviewcontroller import Mode
 
 class ToolbarController:
 
@@ -15,6 +16,7 @@ class ToolbarController:
         self.ui.actionZoomOut.triggered.connect(self.on_zoom_out_triggered)
         self.ui.actionAddField.triggered.connect(self.on_add_field_triggered)
         self.ui.actionAddMark.triggered.connect(self.on_add_mark_triggered)
+        self.ui.actionEditMode.toggled.connect(self.on_edit_mode_toggled)
 
     def on_zoom_in_triggered(self):
         if self.ui.mainTabs.currentIndex() == ToolbarController.EXAMS_INDEX:
@@ -39,6 +41,13 @@ class ToolbarController:
             scale = controller.scale
             if scale <= 2.0:
                 controller.scale += 0.1
+
+    def on_edit_mode_toggled(self, active):
+        if active:
+            self.mainwindow.template_view_controller.mode = Mode.EDIT
+        else:
+            self.mainwindow.template_view_controller.mode = Mode.CREATE
+
 
     def on_add_field_triggered(self):
         self.on_add_rectangle()

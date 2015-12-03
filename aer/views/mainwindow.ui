@@ -92,8 +92,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>567</width>
-              <height>519</height>
+              <width>98</width>
+              <height>31</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -339,6 +339,8 @@
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
    <addaction name="separator"/>
+   <addaction name="actionEditMode"/>
+   <addaction name="separator"/>
    <addaction name="actionAddMark"/>
    <addaction name="actionAddField"/>
   </widget>
@@ -422,6 +424,14 @@
   <action name="actionAddMark">
    <property name="text">
     <string>Add mark</string>
+   </property>
+  </action>
+  <action name="actionEditMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit Mode</string>
    </property>
   </action>
  </widget>
