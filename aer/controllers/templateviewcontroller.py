@@ -12,6 +12,8 @@ from enum import Enum
 class Mode(Enum):
     CREATE = 1
     EDIT = 2
+    MOVE = 3
+    SCALE = 4
 
 
 class TemplateViewController:
@@ -28,10 +30,12 @@ class TemplateViewController:
         self.ui.templateViewLabel.keyPressed.connect(self.on_key_press)
 
         self.mode = Mode.CREATE
+        self.edit_mode = Mode.MOVE
         self.tmp_rect = None
         self._default_exam = None
         self._selected_template = None
         self._scale = self.config.get_property(TEMPLATE_IMAGE_ZOOM, 1.0)
+        self.scale_rect_margin = 20
 
         self.mouse_pressed = False
         self.mouse_pressed_pos = None
@@ -120,10 +124,14 @@ class TemplateViewController:
 
         if self.mode == Mode.EDIT:
             clicked_rect_tuple = self._selected_template.template.get_field_at(x, y)
-            if clicked_rect_tuple:
+            if clicked_rect_tuple and self.tmp_rect is None:
                 self.tmp_rect = clicked_rect_tuple if clicked_rect_tuple is None else clicked_rect_tuple[1]
                 self.mouse_pos_rect_offset = (x - self.tmp_rect[0], y - self.tmp_rect[1])
                 self.original_rect_pos = (self.tmp_rect[0], self.tmp_rect[1])
+                if self.distance_to_scale(self.mouse_pressed_pos, self.tmp_rect):
+                    self.edit_mode = Mode.SCALE
+                else:
+                    self.edit_mode = Mode.MOVE
             elif self.tmp_rect is not None:
                 self.commit_rect()
             self._draw_template()
@@ -132,12 +140,21 @@ class TemplateViewController:
                 self.tmp_rect = (x, y, 0, 0)
                 self._draw_template()
 
+    def distance_to_scale(self, point, rect):
+        x, y, w, h = rect
+        xp, yp = point
+        dx = x + w - xp
+        dy = y + h - yp
+        return 0 < dx < self.scale_rect_margin and 0 < dy < self.scale_rect_margin
+
     def commit_rect(self):
         x, y, _, __ = self.tmp_rect
-        if self.original_rect_pos != (x, y):
-            o_x, o_y = self.original_rect_pos
-            key, val = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
+        o_x, o_y = self.original_rect_pos
+        key, val = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
+        if self.edit_mode == Mode.MOVE and self.original_rect_pos != (x, y):
             self._selected_template.template.move_field_to(key, self.tmp_rect[0], self.tmp_rect[1])
+        else:
+            self._selected_template.template.scale_field(key, self.tmp_rect[2], self.tmp_rect[3])
         self.original_rect_pos = None
         self.tmp_rect = None
 
@@ -146,8 +163,10 @@ class TemplateViewController:
             if self.mouse_pressed and self.tmp_rect is not None:
                 if self.mode == Mode.CREATE:
                     self._common_move(event.pos())
-                else:
+                elif self.edit_mode == Mode.MOVE:
                     self._move_rect(event.pos())
+                else:
+                    self._common_move(event.pos())
                 self._draw_template()
             pass
 

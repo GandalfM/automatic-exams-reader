@@ -17,6 +17,8 @@ class Template(QObject):
         self._fields = {}
 
     def add_field(self, name, rect, emit=True):
+        rect = self._normalize_rect(rect)
+
         if name in self._fields:
             raise Exception("Already have a field with name " + name)
         if len(rect) != 4:
@@ -27,6 +29,16 @@ class Template(QObject):
         self._fields[name] = rect
         if emit:
             self.templateChanged.emit()
+
+    def _normalize_rect(self, rect):
+        x, y, w, h = rect
+        if w < 0:
+            x += w
+            w = abs(w)
+        if h < 0:
+            y += h
+            h = abs(h)
+        return x, y, w, h
 
     def field_exists(self, name):
         return name in self._fields
@@ -47,6 +59,13 @@ class Template(QObject):
         if key in self._fields:
             x, y, w, h = self._fields[key]
             self._fields[key] = [new_x, new_y, w, h]
+            self.templateChanged.emit()
+            return self._fields[key]
+
+    def scale_field(self, key, new_w, new_h):
+        if key in self._fields:
+            x, y, w, h = self._fields[key]
+            self._fields[key] = [x, y, new_w, new_h]
             self.templateChanged.emit()
             return self._fields[key]
 

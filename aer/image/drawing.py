@@ -12,6 +12,7 @@ class Drawing:
         self._thickness = 3
         self.font = ImageFont.load_default()
         self._text_margin = 10
+        self._scale_margin = 10
 
         if base_img:
             new_size = [int(x * scale) for x in base_img.size]
@@ -24,6 +25,7 @@ class Drawing:
         x2, y2 = x1 + w, y1 + h
         for r in range(0, width):
             dr.rectangle([x1 + r, y1 + r, x2 - r, y2 - r], outline=color)
+        dr.rectangle([x2 - self._scale_margin, y2 - self._scale_margin, x2, y2], fill=color)
         dr.text((x1 + self._text_margin, y1 + 5), text, fill="red", font=self.font)
 
     def _transformed_rect(self, rect):
