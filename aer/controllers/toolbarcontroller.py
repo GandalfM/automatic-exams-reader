@@ -44,8 +44,12 @@ class ToolbarController:
 
     def on_edit_mode_toggled(self, active):
         if active:
+            self.mainwindow.template_view_controller.tmp_rect = None
+            self.mainwindow.template_view_controller.redraw()
             self.mainwindow.template_view_controller.mode = Mode.EDIT
         else:
+            self.mainwindow.template_view_controller.commit_rect()
+            self.mainwindow.template_view_controller.redraw()
             self.mainwindow.template_view_controller.mode = Mode.CREATE
 
 

@@ -125,18 +125,21 @@ class TemplateViewController:
                 self.mouse_pos_rect_offset = (x - self.tmp_rect[0], y - self.tmp_rect[1])
                 self.original_rect_pos = (self.tmp_rect[0], self.tmp_rect[1])
             elif self.tmp_rect is not None:
-                x, y, _, __ = self.tmp_rect
-                if self.original_rect_pos != (x, y):
-                    o_x, o_y = self.original_rect_pos
-                    key, val = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
-                    self._selected_template.template.move_field_to(key, self.tmp_rect[0], self.tmp_rect[1])
-                self.original_rect_pos = None
-                self.tmp_rect = None
+                self.commit_rect()
             self._draw_template()
         else:
             if self._selected_template is not None:
                 self.tmp_rect = (x, y, 0, 0)
                 self._draw_template()
+
+    def commit_rect(self):
+        x, y, _, __ = self.tmp_rect
+        if self.original_rect_pos != (x, y):
+            o_x, o_y = self.original_rect_pos
+            key, val = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
+            self._selected_template.template.move_field_to(key, self.tmp_rect[0], self.tmp_rect[1])
+        self.original_rect_pos = None
+        self.tmp_rect = None
 
     def on_mouse_move(self, event):
         if self._selected_template is not None:
@@ -159,6 +162,9 @@ class TemplateViewController:
         m_x, m_y = int(pos.x() / self._scale), int(pos.y() / self._scale)
         x, y, w, h = self.tmp_rect
         self.tmp_rect = (x, y, m_x - x, m_y - y)
+
+    def redraw(self):
+        self._draw_template()
 
     def on_mouse_release(self, event):
         self.mouse_pressed = False
@@ -193,7 +199,11 @@ class TemplateViewController:
     def change_mode(self, edit):
         if edit:
             self.mode = Mode.EDIT
+            self.tmp_rect = None
+            self._draw_template()
             self.ui.actionEditMode.setChecked(True)
         else:
             self.mode = Mode.CREATE
+            self.commit_rect()
+            self._draw_template()
             self.ui.actionEditMode.setChecked(False)

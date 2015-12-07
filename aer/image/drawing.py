@@ -1,9 +1,9 @@
-from PIL import Image
-from PIL.ImageDraw import Draw
-from PIL import ImageFont
-import numpy as np
-
 import cv2
+import numpy as np
+from PIL import Image
+from PIL import ImageFont
+from PIL.ImageDraw import Draw
+
 
 class Drawing:
     def __init__(self, base_img, scale):
