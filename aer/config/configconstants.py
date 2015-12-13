@@ -1,6 +1,7 @@
 TEMPLATES_LOADED = "app.templates.loaded"
 EXAMS_LOADED = "app.exams.loaded"
 TEMPLATE_DIALOG_PATH_KEY = "template.dialog.path"
+REPORT_DIALOG_PATH_KEY = "report.dialog.path"
 EXAM_DIALOG_PATH_KEY = "exam.dialog.path"
 PROCEED_TEMPLATE_DIALOG_PATH_KEY = "exam.proceed.dialog.path"
 TEMPLATE_IMAGE_ZOOM = "template.image.zoom"

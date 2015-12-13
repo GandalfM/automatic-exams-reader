@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QFileDialog, QProgressDialog, QMessageBox
 from aer.config.configconstants import *
 from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr_task import *
+import os
 
 
 class MenuController:
@@ -12,6 +13,7 @@ class MenuController:
         self.config = self.mainwindow.config_manager
         self.ui = mainwindow.ui
         self.template_dialog_path = self.config.get_property(TEMPLATE_DIALOG_PATH_KEY, ".")
+        self.report_dialog_path = self.config.get_property(REPORT_DIALOG_PATH_KEY, ".")
         self.exam_dialog_path = self.config.get_property(EXAM_DIALOG_PATH_KEY, ".")
         self.proceed_template_dialog_path = self.config.get_property(PROCEED_TEMPLATE_DIALOG_PATH_KEY, ".")
 
@@ -48,25 +50,36 @@ class MenuController:
 
     def on_exam_proceed_template_triggered(self):
         if self.mainwindow.template_view_controller.selected_template is not None:
-            template = self.mainwindow.template_view_controller.selected_template.template
-            if not template.field_exists("mark"):
-                QMessageBox.warning(self.mainwindow, "Warning", "No mark field detected")
+            # define where we should save report
+            fd = QFileDialog(self.mainwindow, "Save report", self.report_dialog_path)
+            fd.setDefaultSuffix("json")
+            fd.setNameFilters(["JSON files (*.json)"])
+            fd.setAcceptMode(QFileDialog.AcceptSave)
 
-            progressDialog = QProgressDialog(self.mainwindow)
+            if fd.exec():
+                self.report_dialog_path = os.path.dirname(fd.selectedFiles()[0])
+                self.config.set_property(TEMPLATE_DIALOG_PATH_KEY, self.report_dialog_path)
 
-            extractor = FieldExtractor(template)
-            mark = extractor.extract_mark_from_exam(self.mainwindow.template_view_controller.default_exam)
+                template = self.mainwindow.template_view_controller.selected_template.template
+                if not template.field_exists("mark"):
+                    QMessageBox.warning(self.mainwindow, "Warning", "No mark field detected")
 
-            self.ocr_task.mark = mark
-            self.ocr_task.template = template
-            self.ocr_task.exams = self.mainwindow.examcontroller.exams
-            self.ocr_task.finished.connect(lambda: progressDialog.close())
-            progressDialog.setWindowTitle("Template proceed")
-            progressDialog.setRange(0, 0)
-            progressDialog.setCancelButton(None)
+                progressDialog = QProgressDialog(self.mainwindow)
 
-            progressDialog.show()
-            self.ocr_task.start()
+                extractor = FieldExtractor(template)
+                mark = extractor.extract_mark_from_exam(self.mainwindow.template_view_controller.default_exam)
+
+                self.ocr_task.mark = mark
+                self.ocr_task.template = template
+                self.ocr_task.exams = self.mainwindow.examcontroller.exams
+                self.ocr_task.report_path = fd.selectedFiles()[0]
+                self.ocr_task.finished.connect(lambda: progressDialog.close())
+                progressDialog.setWindowTitle("Template proceed")
+                progressDialog.setRange(0, 0)
+                progressDialog.setCancelButton(None)
+
+                progressDialog.show()
+                self.ocr_task.start()
 
     def on_template_save(self):
         template_file = self.mainwindow.template_view_controller.selected_template
