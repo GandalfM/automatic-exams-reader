@@ -1,12 +1,14 @@
-from PyQt5 import QtGui
+import time
+from enum import Enum
+
 from PyQt5 import QtCore
+from PyQt5 import QtGui
 
 from aer.config.configconstants import TEMPLATE_IMAGE_ZOOM
 from aer.domain.template import Template
 from aer.domain.templatefile import TemplateFile
 from aer.image.drawing import Drawing
 from aer.utils.imageutil import pil2pixmap
-from enum import Enum
 
 
 class Mode(Enum):
@@ -41,6 +43,7 @@ class TemplateViewController:
         self.mouse_pressed_pos = None
         self.mouse_pos_rect_offset = None
         self.original_rect_pos = None
+        self.draw_time = 0
 
         self.drawing = Drawing(None, self._scale)
 
@@ -83,15 +86,17 @@ class TemplateViewController:
         self._draw_template()
 
     def _draw_template(self):
-        if self._default_exam is not None:
-            if self._selected_template is not None:
-                image = self.drawing.draw_template(
-                    self._selected_template.template,
-                    self.tmp_rect,
-                    self.original_rect_pos)
-            else:
-                image = self.drawing.resize(self._default_exam, self._scale)
-            self.ui.templateViewLabel.setPixmap(pil2pixmap(image))
+        if time.time() - self.draw_time > 0.01:
+            if self._default_exam is not None:
+                if self._selected_template is not None:
+                    image = self.drawing.draw_template(
+                        self._selected_template.template,
+                        self.tmp_rect,
+                        self.original_rect_pos)
+                else:
+                    image = self.drawing.resize(self._default_exam, self._scale)
+                self.ui.templateViewLabel.setPixmap(pil2pixmap(image))
+            self.draw_time = time.time()
 
     def _change_text(self):
         content = self._selected_template.template.to_json()
@@ -167,8 +172,8 @@ class TemplateViewController:
                     self._move_rect(event.pos())
                 else:
                     self._common_move(event.pos())
+
                 self._draw_template()
-            pass
 
     def _move_rect(self, pos):
         m_x, m_y = int(pos.x() / self._scale), int(pos.y() / self._scale)
