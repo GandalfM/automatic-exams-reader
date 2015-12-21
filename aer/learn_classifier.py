@@ -9,6 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import BernoulliRBM
 from sklearn.grid_search import GridSearchCV
 from sklearn.pipeline import Pipeline
+from sklearn import ensemble
 from sklearn import datasets
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
@@ -74,6 +75,7 @@ ap.add_argument("-m", "--mode", default="rbm",
                      "\nlog - logistic regression only"
                      "\nsearch - search for the best parameters in program"
                      "\nsvc - linear svc mode"
+                     "\nrfc - random forest classifier"
                 )
 args = vars(ap.parse_args())
 
@@ -181,5 +183,10 @@ elif mode == "rbm":
 elif mode == "svc":
     # source: http://hanzratech.in/2015/02/24/handwritten-digit-recognition-using-opencv-sklearn-and-python.html
     clf = LinearSVC()
+    clf.fit(trainX, trainY)
+    joblib.dump(clf, CLASSIFIER_FILE, compress=3)
+elif mode == "rfc":
+    # https://github.com/snazrul1/PyRevolution/blob/master/Puzzles/Handwriting_Recognition.ipynb
+    clf = ensemble.RandomForestClassifier()
     clf.fit(trainX, trainY)
     joblib.dump(clf, CLASSIFIER_FILE, compress=3)

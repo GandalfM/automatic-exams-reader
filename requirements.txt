@@ -5,3 +5,4 @@ scikit-learn
 scikit-image
 nolearn
 Pillow
+sklearn
