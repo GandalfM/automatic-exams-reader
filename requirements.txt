@@ -1,1 +1,7 @@
 pytesseract
+PyQt5
+numpy
+scikit-learn
+scikit-image
+nolearn
+Pillow
