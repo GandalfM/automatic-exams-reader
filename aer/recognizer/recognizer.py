@@ -28,6 +28,8 @@ class Recognizer:
             single_character_images = self.field_cutter.cut_field(field_image)
             field = []
             for row in single_character_images:
+                # edit line below to use tesseract engine
+                # recognized_str = ''.join([str(self.ocr.tesseract_from_image(char)) for char in row])
                 recognized_str = ''.join([str(self.ocr.from_image(char)) for char in row])
                 field.append(recognized_str)
             result[field_name] = field

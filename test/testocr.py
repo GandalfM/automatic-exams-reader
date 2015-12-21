@@ -13,11 +13,11 @@ class TestOcr(unittest.TestCase):
     def test_image(self):
         image = Image.open("data/ocr/test-image-four.jpg")
         read = self.ocr.from_image(image)
-        self.assertEqual(4, read, "Should be {}, read {}".format(4, read))
+        self.assertEqual("4", read, "Should be {}, read {}".format(4, read))
 
     def test_file(self):
         read = self.ocr.from_file("data/ocr/test-image-nine.jpg")
-        self.assertEqual(9, read, "Should be {}, read {}".format(9, read))
+        self.assertEqual("9", read, "Should be {}, read {}".format(9, read))
 
     def _test_in_directories(self, real_test_data_dir):
         failures = []
@@ -28,7 +28,7 @@ class TestOcr(unittest.TestCase):
             if not os.path.isdir(path):
                 continue
 
-            expected = int(directory)
+            expected = directory
 
             for file in os.listdir(path):
                 files_nu += 1

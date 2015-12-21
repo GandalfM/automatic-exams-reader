@@ -5,7 +5,7 @@ from skimage.feature import hog
 import numpy as np
 from aer.utils.imageutil import *
 import cv2
-
+import pytesseract
 
 class Ocr:
     __CLASSIFIER_FILE_NAME = "cls.pkl"
@@ -22,10 +22,6 @@ class Ocr:
             raise Exception("Please, create a classifier first. Create will be created after running file learn_classifier.py")
         else:
             self.clf = joblib.load(self.__CLASSIFIER_FILE)
-
-    def from_file(self, path, roi=None):
-        image = Image.open(path)
-        return self.from_image(image, roi)
 
     def filter_biggest_blob(self, image):
         _, labels, stats, _ = cv2.connectedComponentsWithStats(image, self.connectivity)
@@ -58,6 +54,10 @@ class Ocr:
 
         return image[min_y:max_y, min_x:max_x]
 
+    def from_file(self, path, roi=None):
+        image = Image.open(path)
+        return self.from_image(image, roi)
+
     def from_image(self, image, roi=None):
         self.load_classifier()
 
@@ -86,4 +86,14 @@ class Ocr:
         hog_val = hog(im, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
         nbr = self.clf.predict(np.array([hog_val], 'float32'))
 
-        return int(nbr[0])
+        return str(nbr[0])
+
+    def tesseract_from_file(self, path):
+        return self.tesseract_from_image(Image.open(path))
+
+    def tesseract_from_image(self, image):
+        # debug_save_image(np.array(image), "non-handwritten")
+        readed = pytesseract.image_to_string(image, config="-psm 10")
+        if readed:
+            return str(readed[0])
+        return ""
