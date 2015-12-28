@@ -128,8 +128,9 @@ class TemplateViewController:
         self.mouse_pressed_pos = (x, y)
 
         if self.mode == Mode.EDIT:
-            clicked_rect_tuple = self._selected_template.template.get_field_at(x, y)
-            if clicked_rect_tuple and self.tmp_rect is None:
+            clicked_field = self._selected_template.template.get_field_at(x, y)
+            if clicked_field and self.tmp_rect is None:
+                clicked_rect_tuple = (clicked_field.name, clicked_field.rect)
                 self.tmp_rect = clicked_rect_tuple if clicked_rect_tuple is None else clicked_rect_tuple[1]
                 self.mouse_pos_rect_offset = (x - self.tmp_rect[0], y - self.tmp_rect[1])
                 self.original_rect_pos = (self.tmp_rect[0], self.tmp_rect[1])
@@ -155,11 +156,11 @@ class TemplateViewController:
     def commit_rect(self):
         x, y, _, __ = self.tmp_rect
         o_x, o_y = self.original_rect_pos
-        key, val = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
+        field = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
         if self.edit_mode == Mode.MOVE and self.original_rect_pos != (x, y):
-            self._selected_template.template.move_field_to(key, self.tmp_rect[0], self.tmp_rect[1])
+            self._selected_template.template.move_field_to(field.name, self.tmp_rect[0], self.tmp_rect[1])
         else:
-            self._selected_template.template.scale_field(key, self.tmp_rect[2], self.tmp_rect[3])
+            self._selected_template.template.scale_field(field.name, self.tmp_rect[2], self.tmp_rect[3])
         self.original_rect_pos = None
         self.tmp_rect = None
 

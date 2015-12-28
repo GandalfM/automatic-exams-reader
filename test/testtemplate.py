@@ -10,7 +10,7 @@ class TestTemplate(unittest.TestCase):
             "name": "name",
             "size": [800, 600],
             "rects": [
-                ["wynik", [0, 0, 100, 100]],
+                {"name": "wynik", "rect": [0, 0, 100, 100]},
             ]}
 
         template = Template("name", (800, 600))
@@ -28,7 +28,9 @@ class TestTemplate(unittest.TestCase):
         expected.add_field("wynik", (10, 10, 80, 60))
 
         data = json.dumps({"name": "name", "size": [800, 600],
-                           "rects": [["numer_indeksu", [0, 0, 200, 100]], ["wynik", [10, 10, 80, 60]]]})
+                           "rects": [{"name": "numer_indeksu", "rect": [0, 0, 200, 100]},
+                                     {"name": "wynik", "rect": [10, 10, 80, 60]}]
+                           })
         template = Template.from_json(data)
 
         self.assertEqual(template, expected)
@@ -37,6 +39,7 @@ class TestTemplate(unittest.TestCase):
         with self.assertRaises(Exception):
             template = Template("name", (100, 100))
             template.add_field("failing", (100, 0, 100, 100))
+
 
 if __name__ == '__main__':
     unittest.main()

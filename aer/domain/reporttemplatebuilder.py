@@ -19,7 +19,7 @@ class ReportTemplateBuilder:
         return self
 
     def check_field_exists(self, field_name):
-        return field_name in self.template.get_fields()
+        return self.template.field_exists(field_name)
 
     def build(self):
         return self.report_template

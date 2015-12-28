@@ -34,7 +34,8 @@ class Drawing:
     def draw_template(self, template, tmp_rect, editing_pos):
         draw = Draw(self.canvas)
         self.canvas.paste(self.base_img)
-        for name, rect in template.get_fields().items():
+        for name, field in template.get_fields().items():
+            rect = field.rect
             if editing_pos is not None and editing_pos[0] == rect[0] and editing_pos[1] == rect[1]:
                 continue
             self._draw_rect(draw, self._transformed_rect(rect), text=name)

@@ -22,16 +22,16 @@ class FieldExtractor:
 
     def extract_fields_from_exam(self, exam_image):
         extract_function = extract_function_factory(exam_image)
-        extracted_fields = {k: extract_function(v) for k, v in self.template.get_fields().items() if k != "mark"}
+        extracted_fields = {k: extract_function(v.rect) for k, v in self.template.get_fields().items() if k != "mark"}
         return extracted_fields
 
     def extract_mark_from_exam(self, exam_image):
         extract_function = extract_function_factory(exam_image)
-        if "mark" not in self.template.get_fields():
+        if not self.template.field_exists("mark"):
             return None
 
-        extracted_field = extract_function(self.template.get_fields()["mark"])
+        extracted_field = extract_function(self.template.get_fields()["mark"].rect)
         mark = Mark()
         mark.image = extracted_field
-        mark.place = self.template.get_fields()["mark"][:2]
+        mark.place = self.template.get_fields()["mark"].rect[:2]
         return mark

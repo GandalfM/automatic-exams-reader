@@ -92,7 +92,7 @@ class MenuController:
                 self.save_file(template_file.file, template_file.template)
                 template_file.changed = False
             else:
-                self.ui.statusbar.showMessage("Template contains errors or no changes from last save.".format(template_file.file.name))
+                self.ui.statusbar.showMessage("Template \"{}\" contains errors or no changes from last save.".format(template_file.file.name))
 
     def on_template_save_as(self):
         template_file = self.mainwindow.template_view_controller.selected_template
