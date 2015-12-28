@@ -13,6 +13,7 @@ class Field:
         self.rect = rect
         self.name = name
         self.field_type = field_type
+        self.image = None
 
     def to_dict(self):
         return {

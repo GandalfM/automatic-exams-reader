@@ -4,6 +4,7 @@ from PIL import Image
 from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr import Ocr
 from aer.recognizer.fieldcutter import FieldCutter
+from aer.domain.field import FieldType
 import cv2
 
 
@@ -24,15 +25,17 @@ class Recognizer:
     def recognize(self, exam_image):
         extracted_fields = self.extractor.extract_fields_from_exam(exam_image)
         result = {}
-        for field_name, field_image in extracted_fields.items():
-            single_character_images = self.field_cutter.cut_field(field_image)
+        for field_obj in extracted_fields:
+            single_character_images = self.field_cutter.cut_field(field_obj.image)
             field = []
             for row in single_character_images:
-                # edit line below to use tesseract engine
-                # recognized_str = ''.join([str(self.ocr.tesseract_from_image(char)) for char in row])
-                recognized_str = ''.join([str(self.ocr.from_image(char)) for char in row])
+                recognized_str = ""
+                if field_obj.field_type == FieldType.HANDWRITTEN:
+                    recognized_str = ''.join([str(self.ocr.from_image(char)) for char in row])
+                elif field_obj.field_type == FieldType.PRINTED:
+                    recognized_str = ''.join([str(self.ocr.tesseract_from_image(char)) for char in row])
                 field.append(recognized_str)
-            result[field_name] = field
+            result[field_obj.name] = field
         return result
 
     def translate_image(self, image, mark):

@@ -19,7 +19,7 @@ class TestOcr(unittest.TestCase):
         read = self.ocr.from_file("data/ocr/test-image-nine.jpg")
         self.assertEqual("9", read, "Should be {}, read {}".format(9, read))
 
-    def _test_in_directories(self, real_test_data_dir):
+    def _test_in_directories(self, real_test_data_dir, predict_function):
         failures = []
 
         files_nu = 0
@@ -33,7 +33,7 @@ class TestOcr(unittest.TestCase):
             for file in os.listdir(path):
                 files_nu += 1
                 file_path = os.path.join(path, file)
-                read = self.ocr.from_file(file_path)
+                read = predict_function(file_path)
                 if not expected == read:
                     failures.append((file_path, expected, read))
 
@@ -45,11 +45,11 @@ class TestOcr(unittest.TestCase):
 
     def test_real(self):
         real_test_data_dir = "data/ocr/real"
-        self._test_in_directories(real_test_data_dir)
+        self._test_in_directories(real_test_data_dir, lambda path: self.ocr.from_file(path))
 
     def test_non_handwritten(self):
         real_test_data_dir = "data/ocr/non-handwritten"
-        self._test_in_directories(real_test_data_dir)
+        self._test_in_directories(real_test_data_dir, lambda path: self.ocr.tesseract_from_file(path))
 
 if __name__ == '__main__':
     unittest.main()

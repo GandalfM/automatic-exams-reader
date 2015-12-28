@@ -22,8 +22,9 @@ class FieldExtractor:
 
     def extract_fields_from_exam(self, exam_image):
         extract_function = extract_function_factory(exam_image)
-        extracted_fields = {k: extract_function(v.rect) for k, v in self.template.get_fields().items() if k != "mark"}
-        return extracted_fields
+        for field in filter(lambda field: field.name != "mark", self.template.get_fields().values()):
+            field.image = extract_function(field.rect)
+            yield field
 
     def extract_mark_from_exam(self, exam_image):
         extract_function = extract_function_factory(exam_image)
