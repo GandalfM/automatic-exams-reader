@@ -7,14 +7,17 @@ from aer.utils.imageutil import *
 import cv2
 import pytesseract
 
+
 class Ocr:
     __CLASSIFIER_FILE_NAME = "cls.pkl"
+    __TESSERACT_CONFIG_FILENAME = "tesseract-config"
     __TO_WHITE_BLACK_THRESHOLD = 100
 
     def __init__(self):
         self.clf = None
         parent_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.__CLASSIFIER_FILE = os.path.join(parent_dir, self.__CLASSIFIER_FILE_NAME)
+        self.__TESSERACT_CONFIG = os.path.join(parent_dir, self.__TESSERACT_CONFIG_FILENAME)
         self.connectivity = 4
 
     def load_classifier(self):
@@ -93,7 +96,7 @@ class Ocr:
 
     def tesseract_from_image(self, image):
         # debug_save_image(np.array(image), "non-handwritten")
-        readed = pytesseract.image_to_string(image, config="-psm 10")
-        if readed:
-            return str(readed[0])
+        read = pytesseract.image_to_string(image, config="-psm 10 {}".format(self.__TESSERACT_CONFIG))
+        if read:
+            return str(read[0])
         return ""
