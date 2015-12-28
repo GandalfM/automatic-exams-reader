@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
 from aer.controllers.templateviewcontroller import Mode
+from aer.controllers.addfielddialog import AddFieldDialog
 
 class ToolbarController:
 
@@ -64,13 +65,15 @@ class ToolbarController:
         if rect is not None:
             template = self.mainwindow.template_view_controller.selected_template.template
             if name is None:
-                while template.field_exists("default" + str(self.counter)):
+                while template.field_exists("default {}".format(self.counter)):
                     self.counter += 1
-                default = "default{}".format(self.counter)
-                name, ok = QInputDialog.getText(self.mainwindow, 'Field name', 'Enter field name:', QLineEdit.Normal, default)
+                default = "default {}".format(self.counter)
+                dialog = AddFieldDialog()
+                dialog.show(name=default)
 
-                if not ok:
+                if not dialog.ok:
                     return
+                name = dialog.name
                 
                 self.counter += 1
 
