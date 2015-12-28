@@ -4,10 +4,10 @@
 * Python 3.4
 * OpenCV 3.0 compiled with Python3 wrapper
 * PyQt 5 with pyuic5 command
-* python3-numpy
-* python3-pillow
-* python3-scikit-learn
-* python3-scikit-image
+* Tesseract engine (https://github.com/tesseract-ocr/tesseract)
+
+All python requirements are listed in `requirements.txt` file (you can install them via `pip`)
+
 
 ### First run
     export PYTHONPATH=$PYTHONPATH:`pwd`
