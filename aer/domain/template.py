@@ -1,8 +1,7 @@
 import json
-
 from PyQt5.QtCore import QObject, pyqtSignal
 from aer.domain.reporttemplatebuilder import ReportTemplateBuilder
-from aer.domain.field import Field
+from aer.domain.field import *
 
 from aer.domain.serialization import TemplateEncoder
 
@@ -17,7 +16,7 @@ class Template(QObject):
         self.size = size
         self._fields = {}
 
-    def add_field(self, name, rect, emit=True):
+    def add_field(self, name, rect, emit=True, field_type=FieldType.HANDWRITTEN):
         rect = self._normalize_rect(rect)
 
         if self.field_exists(name):
@@ -27,7 +26,7 @@ class Template(QObject):
         if rect[0] + rect[2] > self.size[0] or rect[1] + rect[3] > self.size[1]:
             raise Exception("The given rectangle does not fit.")
 
-        field = Field(name=name, rect=rect)
+        field = Field(name=name, rect=rect, field_type=field_type)
         self._fields[name] = field
         if emit:
             self.templateChanged.emit()

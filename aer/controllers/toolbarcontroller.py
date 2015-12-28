@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QInputDialog, QLineEdit
+from aer.domain.field import FieldType
 from aer.controllers.templateviewcontroller import Mode
 from aer.controllers.addfielddialog import AddFieldDialog
 
@@ -62,25 +63,27 @@ class ToolbarController:
 
     def on_add_rectangle(self, name=None):
         rect = self.mainwindow.template_view_controller.tmp_rect
+        field_type = FieldType.HANDWRITTEN
         if rect is not None:
-            template = self.mainwindow.template_view_controller.selected_template.template
             if name is None:
-                while template.field_exists("default {}".format(self.counter)):
-                    self.counter += 1
-                default = "default {}".format(self.counter)
                 dialog = AddFieldDialog()
-                dialog.show(name=default)
+                dialog.show(name=self._default_name())
 
                 if not dialog.ok:
                     return
                 name = dialog.name
-                
-                self.counter += 1
+                field_type = dialog.field_type
 
             template = self.mainwindow.template_view_controller.selected_template.template
             self.mainwindow.template_view_controller.tmp_rect = None
             try:
-                template.add_field(name, rect)
+                template.add_field(name, rect, field_type=field_type)
             except Exception as ex:
                 self.mainwindow.template_view_controller.tmp_rect = rect
                 self.ui.statusbar.showMessage(str(ex))
+
+    def _default_name(self):
+        template = self.mainwindow.template_view_controller.selected_template.template
+        while template.field_exists("default {}".format(self.counter)):
+            self.counter += 1
+        return "default {}".format(self.counter)

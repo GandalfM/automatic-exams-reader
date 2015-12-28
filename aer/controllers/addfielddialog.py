@@ -1,12 +1,6 @@
 from PyQt5.QtWidgets import QDialog
 from aer.views.addfielddialog import Ui_AddFieldDialog
-from enum import Enum
-
-
-class FieldType(Enum):
-    MARK = 1
-    HANDWRITTEN = 2
-    PRINTED = 3
+from aer.domain.field import FieldType
 
 
 class AddFieldDialog(QDialog):

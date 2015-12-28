@@ -2,6 +2,7 @@ import unittest
 import json
 
 from aer.domain.template import Template
+from aer.domain.field import *
 
 
 class TestTemplate(unittest.TestCase):
@@ -10,11 +11,11 @@ class TestTemplate(unittest.TestCase):
             "name": "name",
             "size": [800, 600],
             "rects": [
-                {"name": "wynik", "rect": [0, 0, 100, 100]},
+                {"name": "wynik", "rect": [0, 0, 100, 100], "field_type": FieldType.HANDWRITTEN.value},
             ]}
 
         template = Template("name", (800, 600))
-        template.add_field("wynik", (0, 0, 100, 100))
+        template.add_field("wynik", (0, 0, 100, 100), field_type=FieldType.HANDWRITTEN)
         actual = ''.join(template.to_json().split())
         expected = ''.join(json.dumps(expected_dict).split())
         self.assertEqual(expected, actual)
@@ -25,11 +26,11 @@ class TestTemplate(unittest.TestCase):
     def test_load_json(self):
         expected = Template("name", (800, 600))
         expected.add_field("numer_indeksu", (0, 0, 200, 100))
-        expected.add_field("wynik", (10, 10, 80, 60))
+        expected.add_field("wynik", (10, 10, 80, 60), field_type=FieldType.MARK)
 
         data = json.dumps({"name": "name", "size": [800, 600],
                            "rects": [{"name": "numer_indeksu", "rect": [0, 0, 200, 100]},
-                                     {"name": "wynik", "rect": [10, 10, 80, 60]}]
+                                     {"name": "wynik", "rect": [10, 10, 80, 60], "field_type": FieldType.MARK.value}]
                            })
         template = Template.from_json(data)
 
