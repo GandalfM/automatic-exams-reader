@@ -86,17 +86,15 @@ class TemplateViewController:
         self._draw_template()
 
     def _draw_template(self):
-        if time.time() - self.draw_time > 0.01:
-            if self._default_exam is not None:
-                if self._selected_template is not None:
-                    image = self.drawing.draw_template(
-                        self._selected_template.template,
-                        self.tmp_rect,
-                        self.original_rect_pos)
-                else:
-                    image = self.drawing.resize(self._default_exam, self._scale)
-                self.ui.templateViewLabel.setPixmap(pil2pixmap(image))
-            self.draw_time = time.time()
+        if self._default_exam is not None:
+            if self._selected_template is not None:
+                image = self.drawing.draw_template(
+                    self._selected_template.template,
+                    self.tmp_rect,
+                    self.original_rect_pos)
+            else:
+                image = self.drawing.resize(self._default_exam, self._scale)
+            self.ui.templateViewLabel.setPixmap(pil2pixmap(image))
 
     def _change_text(self):
         content = self._selected_template.template.to_json()
@@ -174,7 +172,9 @@ class TemplateViewController:
                 else:
                     self._common_move(event.pos())
 
-                self._draw_template()
+                if time.time() - self.draw_time > 0.01:
+                    self._draw_template()
+                    self.draw_time = time.time()
 
     def _move_rect(self, pos):
         m_x, m_y = int(pos.x() / self._scale), int(pos.y() / self._scale)
