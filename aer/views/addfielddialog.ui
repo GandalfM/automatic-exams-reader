@@ -41,6 +41,9 @@
     </rect>
    </property>
    <layout class="QVBoxLayout" name="layout_1">
+    <property name="margin">
+     <number>10</number>
+    </property>
     <item>
      <layout class="QFormLayout" name="formLayout_1">
       <item row="0" column="0">

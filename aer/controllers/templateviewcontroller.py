@@ -152,15 +152,16 @@ class TemplateViewController:
         return 0 < dx < self.scale_rect_margin and 0 < dy < self.scale_rect_margin
 
     def commit_rect(self):
-        x, y, _, __ = self.tmp_rect
-        o_x, o_y = self.original_rect_pos
-        field = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
-        if self.edit_mode == Mode.MOVE and self.original_rect_pos != (x, y):
-            self._selected_template.template.move_field_to(field.name, self.tmp_rect[0], self.tmp_rect[1])
-        else:
-            self._selected_template.template.scale_field(field.name, self.tmp_rect[2], self.tmp_rect[3])
-        self.original_rect_pos = None
-        self.tmp_rect = None
+        if self.tmp_rect is not None:
+            x, y, _, __ = self.tmp_rect
+            o_x, o_y = self.original_rect_pos
+            field = self._selected_template.template.get_field_at(o_x + 1, o_y + 1)
+            if self.edit_mode == Mode.MOVE and self.original_rect_pos != (x, y):
+                self._selected_template.template.move_field_to(field.name, self.tmp_rect[0], self.tmp_rect[1])
+            else:
+                self._selected_template.template.scale_field(field.name, self.tmp_rect[2], self.tmp_rect[3])
+            self.original_rect_pos = None
+            self.tmp_rect = None
 
     def on_mouse_move(self, event):
         if self._selected_template is not None:
