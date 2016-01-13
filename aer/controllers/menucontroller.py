@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QItemSelectionModel
 from PyQt5.QtWidgets import QFileDialog, QProgressDialog, QMessageBox
 from aer.config.configconstants import *
+from aer.domain.field import FieldType
 from aer.extractor.fieldextractor import FieldExtractor
 from aer.ocr.ocr_task import *
 import os
@@ -61,8 +62,8 @@ class MenuController:
                 self.config.set_property(TEMPLATE_DIALOG_PATH_KEY, self.report_dialog_path)
 
                 template = self.mainwindow.template_view_controller.selected_template.template
-                if not template.field_exists("mark"):
-                    QMessageBox.warning(self.mainwindow, "Warning", "No mark field detected")
+                if not template.type_exists(FieldType.MARK):
+                    QMessageBox.warning(self.mainwindow, "Warning", "No field with mark type detected. Low quality results expected")
 
                 progressDialog = QProgressDialog(self.mainwindow)
 

@@ -19,6 +19,8 @@ class Template(QObject):
     def add_field(self, name, rect, emit=True, field_type=FieldType.HANDWRITTEN):
         rect = self._normalize_rect(rect)
 
+        if field_type == FieldType.MARK and self.type_exists(field_type):
+            raise Exception("Already have a field with type MARK")
         if self.field_exists(name):
             raise Exception("Already have a field with name " + name)
         if len(rect) != 4:
@@ -44,8 +46,18 @@ class Template(QObject):
     def field_exists(self, name):
         return name in self._fields
 
+    def type_exists(self, type):
+        for field in self._fields.values():
+            if field.field_type == FieldType.MARK:
+                return True
+
+        return False
+
     def report_builder(self):
         return ReportTemplateBuilder(self)
+
+    def get_fields_with_type(self, type):
+        return [x for x in self._fields.values() if x.field_type == type]
 
     def get_fields(self):
         return self._fields

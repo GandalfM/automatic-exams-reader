@@ -63,7 +63,7 @@ class ToolbarController:
 
     def on_add_rectangle(self, name=None):
         rect = self.mainwindow.template_view_controller.tmp_rect
-        field_type = FieldType.HANDWRITTEN
+        field_type = FieldType.MARK
         if rect is not None:
             if name is None:
                 dialog = AddFieldDialog()
