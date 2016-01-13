@@ -120,27 +120,27 @@ class TemplateViewController:
         self.ui.templateTextEdit.setPalette(palette)
 
     def on_mouse_press(self, event):
-        x = int(event.pos().x() / self._scale)
-        y = int(event.pos().y() / self._scale)
-        self.mouse_pressed = True
-        self.mouse_pressed_pos = (x, y)
+        if self._selected_template is not None:
+            x = int(event.pos().x() / self._scale)
+            y = int(event.pos().y() / self._scale)
+            self.mouse_pressed = True
+            self.mouse_pressed_pos = (x, y)
 
-        if self.mode == Mode.EDIT:
-            clicked_field = self._selected_template.template.get_field_at(x, y)
-            if clicked_field and self.tmp_rect is None:
-                clicked_rect_tuple = (clicked_field.name, clicked_field.rect)
-                self.tmp_rect = clicked_rect_tuple if clicked_rect_tuple is None else clicked_rect_tuple[1]
-                self.mouse_pos_rect_offset = (x - self.tmp_rect[0], y - self.tmp_rect[1])
-                self.original_rect_pos = (self.tmp_rect[0], self.tmp_rect[1])
-                if self.distance_to_scale(self.mouse_pressed_pos, self.tmp_rect):
-                    self.edit_mode = Mode.SCALE
-                else:
-                    self.edit_mode = Mode.MOVE
-            elif self.tmp_rect is not None:
-                self.commit_rect()
-            self._draw_template()
-        else:
-            if self._selected_template is not None:
+            if self.mode == Mode.EDIT:
+                clicked_field = self._selected_template.template.get_field_at(x, y)
+                if clicked_field and self.tmp_rect is None:
+                    clicked_rect_tuple = (clicked_field.name, clicked_field.rect)
+                    self.tmp_rect = clicked_rect_tuple if clicked_rect_tuple is None else clicked_rect_tuple[1]
+                    self.mouse_pos_rect_offset = (x - self.tmp_rect[0], y - self.tmp_rect[1])
+                    self.original_rect_pos = (self.tmp_rect[0], self.tmp_rect[1])
+                    if self.distance_to_scale(self.mouse_pressed_pos, self.tmp_rect):
+                        self.edit_mode = Mode.SCALE
+                    else:
+                        self.edit_mode = Mode.MOVE
+                elif self.tmp_rect is not None:
+                    self.commit_rect()
+                self._draw_template()
+            else:
                 self.tmp_rect = (x, y, 0, 0)
                 self._draw_template()
 
