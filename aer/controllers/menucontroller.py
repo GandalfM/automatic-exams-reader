@@ -17,8 +17,10 @@ class MenuController:
         self.report_dialog_path = self.config.get_property(REPORT_DIALOG_PATH_KEY, ".")
         self.exam_dialog_path = self.config.get_property(EXAM_DIALOG_PATH_KEY, ".")
         self.proceed_template_dialog_path = self.config.get_property(PROCEED_TEMPLATE_DIALOG_PATH_KEY, ".")
+        self.progressDialog = None
 
         self.ocr_task = OcrTask()
+        self.ocr_task.notifyProgress.connect(self.update_progress)
 
         self.ui.actionTemplateOpen.triggered.connect(self.on_template_open_triggered)
         self.ui.actionExamsImport.triggered.connect(self.on_exam_open_triggered)
@@ -65,7 +67,7 @@ class MenuController:
                 if not template.type_exists(FieldType.MARK):
                     QMessageBox.warning(self.mainwindow, "Warning", "No field with mark type detected. Low quality results expected")
 
-                progressDialog = QProgressDialog(self.mainwindow)
+                self.progressDialog = QProgressDialog(self.mainwindow)
 
                 extractor = FieldExtractor(template)
                 mark = extractor.extract_mark_from_exam(self.mainwindow.template_view_controller.default_exam)
@@ -74,14 +76,18 @@ class MenuController:
                 self.ocr_task.template = template
                 self.ocr_task.exams = self.mainwindow.examcontroller.exams
                 self.ocr_task.report_path = fd.selectedFiles()[0]
-                self.ocr_task.finished.connect(lambda: progressDialog.close())
+                self.ocr_task.finished.connect(lambda: self.progressDialog.close())
                 self.ocr_task.finished.connect(lambda: self.ui.statusbar.showMessage("Done!"))
-                progressDialog.setWindowTitle("Template proceed")
-                progressDialog.setRange(0, 0)
-                progressDialog.setCancelButton(None)
+                self.progressDialog.setWindowTitle("Template proceed")
+                self.progressDialog.setRange(0, len(self.mainwindow.examcontroller.exams))
+                self.progressDialog.setValue(0)
+                self.progressDialog.setCancelButton(None)
 
-                progressDialog.show()
+                self.progressDialog.show()
                 self.ocr_task.start()
+
+    def update_progress(self, i):
+        self.progressDialog.setValue(i)
 
     def on_template_save(self):
         template_file = self.mainwindow.template_view_controller.selected_template
@@ -101,7 +107,7 @@ class MenuController:
         if template_file is not None:
             fd = QFileDialog(self.mainwindow, "Save template", self.template_dialog_path)
             fd.setDefaultSuffix("template")
-            filters = ["Template files (*.template)",  "JSON files (*.json)", "Any files (*)"]
+            filters = ["Template files (*.template)", "JSON files (*.json)", "Any files (*)"]
             fd.setNameFilters(filters)
             fd.setAcceptMode(QFileDialog.AcceptSave)
             if fd.exec():

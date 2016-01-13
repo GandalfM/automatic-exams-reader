@@ -8,6 +8,7 @@ from aer.recognizer.recognizer import Recognizer
 
 class OcrTask(QThread):
     finished = pyqtSignal()
+    notifyProgress = pyqtSignal(int)
     ocr = Ocr()
 
     def __init__(self):
@@ -29,8 +30,10 @@ class OcrTask(QThread):
         recognizer = Recognizer(template)
 
         results = []
-        for exam in self.exams:
+        for i in range(len(self.exams)):
+            exam = self.exams[i]
             result = self._process_exam(exam, recognizer)
+            self.notifyProgress.emit(i + 1)
             results.append({
                 "result": result,
                 "exam_path": exam
