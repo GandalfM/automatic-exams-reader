@@ -71,7 +71,7 @@ class Template(QObject):
         if self.field_exists(key):
             field = self.get_field(key)
             x, y, w, h = field.rect
-            field.rect = [x, y, new_w, new_h]
+            field.rect = self._normalize_rect([x, y, new_w, new_h])
             self.templateChanged.emit()
             return field
 
