@@ -75,6 +75,7 @@ class MenuController:
                 self.ocr_task.exams = self.mainwindow.examcontroller.exams
                 self.ocr_task.report_path = fd.selectedFiles()[0]
                 self.ocr_task.finished.connect(lambda: progressDialog.close())
+                self.ocr_task.finished.connect(lambda: self.ui.statusbar.showMessage("Done!"))
                 progressDialog.setWindowTitle("Template proceed")
                 progressDialog.setRange(0, 0)
                 progressDialog.setCancelButton(None)
