@@ -37,7 +37,7 @@ class TemplateViewController:
         self._default_exam = None
         self._selected_template = None
         self._scale = self.config.get_property(TEMPLATE_IMAGE_ZOOM, 1.0)
-        self.scale_rect_margin = 20
+        self.scale_rect_margin = 30
 
         self.mouse_pressed = False
         self.mouse_pressed_pos = None
