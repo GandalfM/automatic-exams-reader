@@ -26,6 +26,14 @@ class TemplateListController:
     def on_template_text_selection(self, index):
         self.selected_template = self._templates[index.row()]
 
+    def remove_selected_templates(self):
+        indices = self.ui.templateListView.selectionModel().selectedRows()
+        indices = sorted(indices, key=lambda idx: idx.row(), reverse=True)
+        for i in indices:
+            del self._templates[i.row()]
+        self.templates = self._templates
+        self.config.set_property(TEMPLATES_LOADED, self._templates)
+
     @property
     def selected_template(self):
         return self._selected_template

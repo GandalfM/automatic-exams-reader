@@ -76,6 +76,9 @@
              <height>16777215</height>
             </size>
            </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
           </widget>
           <widget class="QScrollArea" name="examScrollArea">
            <property name="sizePolicy">
@@ -92,8 +95,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>98</width>
-              <height>31</height>
+              <width>567</width>
+              <height>519</height>
              </rect>
             </property>
             <property name="sizePolicy">
@@ -160,6 +163,9 @@
            </property>
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
            </property>
           </widget>
           <widget class="QTabWidget" name="tabWidget_2">
@@ -305,12 +311,14 @@
     <addaction name="actionTemplateOpen"/>
     <addaction name="actionTemplateSave"/>
     <addaction name="actionTemplateSaveAs"/>
+    <addaction name="actionRemoveSelectedTemplates"/>
    </widget>
    <widget class="QMenu" name="menuExam">
     <property name="title">
      <string>E&amp;xams</string>
     </property>
     <addaction name="actionExamsImport"/>
+    <addaction name="actionRemoveSelectedExams"/>
     <addaction name="separator"/>
     <addaction name="actionExamsProceedTemplate"/>
    </widget>
@@ -367,6 +375,9 @@
    <property name="text">
     <string>&amp;Import</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
   </action>
   <action name="actionZoomIn">
    <property name="text">
@@ -420,6 +431,9 @@
    <property name="toolTip">
     <string>Proceed current template</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
   </action>
   <action name="actionAddMark">
    <property name="text">
@@ -432,6 +446,16 @@
    </property>
    <property name="text">
     <string>Edit Mode</string>
+   </property>
+  </action>
+  <action name="actionRemoveSelectedTemplates">
+   <property name="text">
+    <string>Remove selected</string>
+   </property>
+  </action>
+  <action name="actionRemoveSelectedExams">
+   <property name="text">
+    <string>Remove selected</string>
    </property>
   </action>
  </widget>

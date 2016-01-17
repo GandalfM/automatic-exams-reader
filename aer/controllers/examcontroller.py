@@ -2,6 +2,7 @@ import os
 from PIL import Image
 
 from PyQt5.QtCore import QStringListModel
+from PyQt5.QtWidgets import QMessageBox
 
 from aer.config.configconstants import *
 from aer.image.drawing import Drawing
@@ -48,11 +49,22 @@ class ExamController:
 
     @selected_exam.setter
     def selected_exam(self, value):
-        image = Image.open(value)
-        if self._selected_exam != image:
-            self._selected_exam = image
-            self.template_view_controller.default_exam = image
-            self._draw_exam()
+        if os.path.exists(value):
+            image = Image.open(value)
+            if self._selected_exam != image:
+                self._selected_exam = image
+                self.template_view_controller.default_exam = image
+                self._draw_exam()
+        else:
+            QMessageBox.warning(self.mainwindow, "Warning", "No exam file under this path")
+
+    def remove_selected_exams(self):
+        indices = self.ui.examListView.selectionModel().selectedRows()
+        indices = sorted(indices, key=lambda idx: idx.row(), reverse=True)
+        for i in indices:
+            del self._exams[i.row()]
+        self.exams = self._exams
+        self.config.set_property(EXAMS_LOADED, self._exams)
 
     @property
     def exams(self):

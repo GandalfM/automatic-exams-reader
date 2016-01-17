@@ -28,6 +28,8 @@ class MenuController:
         self.ui.actionTemplateSave.triggered.connect(self.on_template_save)
         self.ui.actionTemplateSaveAs.triggered.connect(self.on_template_save_as)
         self.ui.actionTemplateNew.triggered.connect(self.on_template_new)
+        self.ui.actionRemoveSelectedTemplates.triggered.connect(self.on_template_remove)
+        self.ui.actionRemoveSelectedExams.triggered.connect(self.on_exam_remove)
 
     def on_template_open_triggered(self):
         files, directories = QFileDialog.getOpenFileNames(self.mainwindow, "Open template", self.template_dialog_path)
@@ -134,3 +136,10 @@ class MenuController:
 
     def on_template_new(self):
         self.mainwindow.template_view_controller.selected_template = ""
+
+    def on_template_remove(self):
+        self.mainwindow.template_list_controller.remove_selected_templates()
+        self.mainwindow.template_view_controller.selected_template = ""
+
+    def on_exam_remove(self):
+        self.mainwindow.examcontroller.remove_selected_exams()
