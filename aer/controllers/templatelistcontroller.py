@@ -1,5 +1,8 @@
 import os
+
 from PyQt5.QtCore import QStringListModel
+from PyQt5.QtWidgets import QMessageBox
+
 from aer.config.configconstants import *
 
 
@@ -30,8 +33,11 @@ class TemplateListController:
     @selected_template.setter
     def selected_template(self, value):
         if self._selected_template != value:
-            self._template_view_controller.selected_template = value
-            self._selected_template = value
+            if os.path.exists(value):
+                self._template_view_controller.selected_template = value
+                self._selected_template = value
+            else:
+                QMessageBox.warning(self.mainwindow, "Warning", "No template file under this path")
 
     @property
     def templates(self):
