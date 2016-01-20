@@ -28,7 +28,7 @@ class TestOcr(unittest.TestCase):
             if not os.path.isdir(path):
                 continue
 
-            expected = int(directory)
+            expected = directory
 
             for file in os.listdir(path):
                 files_nu += 1
@@ -54,6 +54,14 @@ class TestOcr(unittest.TestCase):
     def test_non_handwritten(self):
         real_test_data_dir = "data/ocr/non-handwritten"
         self._test_in_directories(real_test_data_dir, lambda path: self.ocr.tesseract_from_file(path))
+
+    def test_empty(self):
+        real_test_data_dir = "data/ocr/empty"
+
+        for file in os.listdir(real_test_data_dir):
+            path = os.path.join(real_test_data_dir, file)
+
+            self.assertEqual(self.ocr.from_file(path), '')
 
 if __name__ == '__main__':
     unittest.main()

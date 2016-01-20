@@ -36,11 +36,19 @@ class Ocr:
         mask[idx] = 255
         return mask
 
+    def isImageEmpty(self, image, maxBlobSize):
+        imageSize = image.shape[0] * image.shape[1]
+        return 0.01 * imageSize > maxBlobSize
+
     def filter_big_blobs(self, image):
         _, labels, stats, _ = cv2.connectedComponentsWithStats(image, self.connectivity)
         if len(stats) == 1:
             return image
-        tmp = np.argwhere(stats[1:, 4] > 0.5 * max(stats[1:, 4]))
+        maxSize = max(stats[1:, 4])
+        if self.isImageEmpty(image, maxSize):
+            return None
+
+        tmp = np.argwhere(stats[1:, 4] > 0.5 * maxSize)
         idx = (labels == tmp[0][0] + 1)
         mask = np.zeros(image.shape, np.uint8)
         mask.fill(0)
@@ -56,38 +64,36 @@ class Ocr:
 
         return image[min_y:max_y, min_x:max_x]
 
-    def from_file(self, path, roi=None):
+    def from_file(self, path):
         image = Image.open(path)
-        return self.from_image(image, roi)
+        return self.from_image(image)
 
-    def from_image(self, image, roi=None):
-        hog_val = self.features(image, roi)
+    def from_image(self, image):
+        hog_val = self.features(image)
+        if hog_val is None:
+            return ""
         nbr = self.clf.predict(np.array([hog_val], 'float32'))
 
-        return int(nbr[0])
+        return str(int(nbr[0]))
 
     def features_from_file(self, path):
         image = Image.open(path)
         return self.features(image)
 
-    def features(self, image, roi=None):
+    def features(self, image):
         self.load_classifier()
 
         image = image.convert('RGBA')
         open_cv_image = np.array(image)
         # debug_save_image(open_cv_image, "initial")
 
-        if roi:
-            x = int(roi[0])
-            y = int(roi[1])
-            width = int(roi[2])
-            height = int(roi[3])
-            open_cv_image = open_cv_image[y:y+height, x: x + width]
-
         im = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
         im = cv2.adaptiveThreshold(im, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
         im = self.filter_big_blobs(im)
+        if im is None:
+            return None
+
         im = self.trim_image(im)
 
         # debug_save_image(im, "before-resize")
