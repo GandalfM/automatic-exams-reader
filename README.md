@@ -17,7 +17,10 @@ All python requirements are listed in `requirements.txt` file (you can install t
 	python3 main.py
 
 ### Additional learning methods
-Please, type `python3 learn_classifier.py --help` for more learning methods and help (e.g. including additional files)
+Please, type `python3 learn_classifier.py --help` for more learning methods and help (e.g. including additional files).
+
+The best (empiric) solution is `RandomForestClassifier` with additional data (not only MNIST database).
+
 ### Run
     cd aer
     python3 main.py

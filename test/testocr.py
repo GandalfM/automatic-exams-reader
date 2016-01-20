@@ -28,7 +28,7 @@ class TestOcr(unittest.TestCase):
             if not os.path.isdir(path):
                 continue
 
-            expected = directory
+            expected = int(directory)
 
             for file in os.listdir(path):
                 files_nu += 1
@@ -45,6 +45,10 @@ class TestOcr(unittest.TestCase):
 
     def test_real(self):
         real_test_data_dir = "data/ocr/real"
+        self._test_in_directories(real_test_data_dir, lambda path: self.ocr.from_file(path))
+
+    def test_new_handwritten(self):
+        real_test_data_dir = "data/ocr/new-handwritten"
         self._test_in_directories(real_test_data_dir, lambda path: self.ocr.from_file(path))
 
     def test_non_handwritten(self):

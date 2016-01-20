@@ -110,7 +110,7 @@ ap.add_argument("-t", "--test", required=False, type=float,
                 help="size of test split", default=0.1)
 ap.add_argument("--disable-mnist", action="store_true", help="Disable MNIST database")
 ap.add_argument("additional-directories", nargs="*", help="Include additional files. Each passed directory should contains ten directories with files. Name of subdirectory should have only one, recognized sign")
-ap.add_argument("-m", "--mode", default="rbm",
+ap.add_argument("-m", "--mode", default="rfc",
                 help="Program options:"
                      "\nrbm (default) - rbm + logistic regression"
                      "\nlog - logistic regression only"
@@ -188,7 +188,7 @@ if mode == "search":
     # show a reminder message
     print("\nIMPORTANT")
     print("Now that your parameters have been searched, manually set")
-    print("them and re-run this script with --search 0")
+    print("them and re-run this script with --mode rbm")
 
 # otherwise, use the manually specified parameters
 elif mode == "log":
@@ -202,7 +202,7 @@ elif mode == "log":
     try:
         joblib.dump(logistic, CLASSIFIER_FILE, compress=3)
     except exc:
-        print("Logistic save failed :(")
+        print("Logistic save failed")
 
 elif mode == "rbm":
     # initialize the RBM + Logistic Regression classifier with
@@ -220,7 +220,7 @@ elif mode == "rbm":
     try:
         joblib.dump(classifier, CLASSIFIER_FILE, compress=3)
     except exc:
-        print("Pipeline classifier save failed :(")
+        print("Pipeline classifier save failed")
 elif mode == "svc":
     # source: http://hanzratech.in/2015/02/24/handwritten-digit-recognition-using-opencv-sklearn-and-python.html
     clf = LinearSVC()
