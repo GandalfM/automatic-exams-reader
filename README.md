@@ -15,7 +15,9 @@ All python requirements are listed in `requirements.txt` file (you can install t
 	python3 convert-ui.py
 	python3 learn_classifier.py
 	python3 main.py
-	
+
+### Additional learning methods
+Please, type `python3 learn_classifier.py --help` for more learning methods and help (e.g. including additional files)
 ### Run
     cd aer
     python3 main.py

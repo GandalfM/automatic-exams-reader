@@ -1,6 +1,5 @@
 from PIL import Image
 from sklearn.externals import joblib
-from sklearn import datasets
 from skimage.feature import hog
 import numpy as np
 from aer.utils.imageutil import *
@@ -62,6 +61,16 @@ class Ocr:
         return self.from_image(image, roi)
 
     def from_image(self, image, roi=None):
+        hog_val = self.features(image, roi)
+        nbr = self.clf.predict(np.array([hog_val], 'float32'))
+
+        return int(nbr[0])
+
+    def features_from_file(self, path):
+        image = Image.open(path)
+        return self.features(image)
+
+    def features(self, image, roi=None):
         self.load_classifier()
 
         image = image.convert('RGBA')
@@ -86,10 +95,7 @@ class Ocr:
         im = cv2.resize(im.copy(), (28, 28))
 
         # debug_save_image(im, "resized")
-        hog_val = hog(im, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
-        nbr = self.clf.predict(np.array([hog_val], 'float32'))
-
-        return str(nbr[0])
+        return hog(im, orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1), visualise=False)
 
     def tesseract_from_file(self, path):
         return self.tesseract_from_image(Image.open(path))

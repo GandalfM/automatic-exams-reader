@@ -16,6 +16,8 @@ from sklearn.svm import LinearSVC
 import numpy as np
 import argparse
 import time
+import os
+from aer.ocr.ocr import Ocr
 
 # IMPORTANT - RESULTS OF TEST
 #
@@ -41,12 +43,14 @@ import time
 # 	 rbm__n_iter: 20.000000
 
 CLASSIFIER_FILE = "cls.pkl"
+ALLOWED_DIRECTORY_NAMES = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-def load_digits():
+def load_mnist(should_disable_mnist):
+    if should_disable_mnist:
+        return [], []
     dataset = datasets.fetch_mldata("MNIST Original")
     features = np.array(dataset.data, 'int16')
-    labels = np.array(dataset.target, 'int')
-
+    labels = dataset.target.tolist()
     hog_features = []
 
     # return a tuple of the data and targets
@@ -54,8 +58,43 @@ def load_digits():
         fd = hog(feature.reshape((28, 28)), orientations=9, pixels_per_cell=(14, 14), cells_per_block=(1, 1),
                  visualise=False)
         hog_features.append(fd)
+    return hog_features, labels
 
-    return np.array(hog_features, "float32"), labels
+
+def load_from_directory(main_directory):
+    hog_features = []
+    labels = []
+
+    # add additional, real data
+    ocr = Ocr()
+    for directory in os.listdir(main_directory):
+        path = os.path.join(main_directory, directory)
+        if not os.path.isdir(path):
+            continue
+        if directory not in ALLOWED_DIRECTORY_NAMES:
+            raise Exception("Name of directory isn't one of the allowed names. Only names with one sign 0-9 are allowed")
+
+        expected = int(directory)
+
+        for file in os.listdir(path):
+            file_path = os.path.join(path, file)
+            feature = ocr.features_from_file(file_path)
+            hog_features.append(feature)
+            labels.append(expected)
+    return hog_features, labels
+
+
+def load_digits(should_disable_mnist, additional):
+
+    data, labels = load_mnist(should_disable_mnist)
+
+    for directory in additional:
+        dir_data, dir_label = load_from_directory(directory)
+
+        data.extend(dir_data)
+        labels.extend(dir_label)
+
+    return np.array(data, 'float32'), np.array(labels, "int")
 
 
 def scale(X, eps=0.001):
@@ -69,6 +108,8 @@ def scale(X, eps=0.001):
 ap = argparse.ArgumentParser()
 ap.add_argument("-t", "--test", required=False, type=float,
                 help="size of test split", default=0.1)
+ap.add_argument("--disable-mnist", action="store_true", help="Disable MNIST database")
+ap.add_argument("additional-directories", nargs="*", help="Include additional files. Each passed directory should contains ten directories with files. Name of subdirectory should have only one, recognized sign")
 ap.add_argument("-m", "--mode", default="rbm",
                 help="Program options:"
                      "\nrbm (default) - rbm + logistic regression"
@@ -83,7 +124,7 @@ args = vars(ap.parse_args())
 # to floats, and then scale the data s.t. the predictors (columns)
 # are within the range [0, 1] -- this is a requirement of the
 # Bernoulli RBM
-(X, y) = load_digits()
+(X, y) = load_digits(args["disable_mnist"], args["additional-directories"])
 
 # construct the training/testing split
 (trainX, testX, trainY, testY) = train_test_split(X, y,
