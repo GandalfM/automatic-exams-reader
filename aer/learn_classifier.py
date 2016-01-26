@@ -79,8 +79,9 @@ def load_from_directory(main_directory):
         for file in os.listdir(path):
             file_path = os.path.join(path, file)
             feature = ocr.features_from_file(file_path)
-            hog_features.append(feature)
-            labels.append(expected)
+            if feature is not None:
+                hog_features.append(feature)
+                labels.append(expected)
     return hog_features, labels
 
 
