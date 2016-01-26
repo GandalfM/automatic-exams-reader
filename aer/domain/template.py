@@ -94,7 +94,6 @@ class Template(QObject):
             self.templateChanged.emit()
             return result
 
-
     @staticmethod
     def _point_inside_rect(field, x, y):
         rect = field.rect

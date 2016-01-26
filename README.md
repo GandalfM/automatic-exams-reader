@@ -24,3 +24,9 @@ The best (empiric) solution is `RandomForestClassifier` with additional data (no
 ### Run
     cd aer
     python3 main.py
+
+
+### Authors
+* Adrian Boguszewski
+* Bartłomiej Lewandowski
+* Mateusz Szerszyński
